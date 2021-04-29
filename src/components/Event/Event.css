@@ -1,0 +1,28 @@
+.event {
+    display: grid;
+    grid-template-columns: repeat(2, 700px);
+    grid-template-areas: 
+        "group1 group2";
+    justify-self: center;
+}
+
+.group1 {
+    grid-area: group1;
+}
+
+.group2 {
+    grid-area: group2;
+}
+
+@media (max-width: 1400px) {
+    .event {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas: 
+            "group1"
+            "group2";
+
+        grid-template-columns: 1fr;
+    }
+
+}

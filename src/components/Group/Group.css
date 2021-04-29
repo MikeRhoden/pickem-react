@@ -1,0 +1,47 @@
+.group {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(2, 350px);
+    grid-template-areas: 
+        "group-name group-name"
+        "group-area1 group-area2";
+    margin-top: 20px;
+    justify-self: center;
+}
+
+.group-name {
+    background: black;
+    color: #0099CC;
+    display: grid;
+    font-size: 16px;
+    font-weight: bold;
+    grid-area: group-name;
+    justify-content: center;
+    margin-bottom: 10px;
+    padding: 8px 0 8px 0;
+}
+
+.group-area1 {
+    grid-area: group-area1;
+    justify-self: center;
+}
+
+.group-area2 {
+    grid-area: group-area2;
+    justify-self: center;
+}
+
+@media (max-width: 700px) {
+    .group {
+        grid-template-areas: 
+            "group-name"
+            "group-area1"
+            "group-area2";
+        grid-template-columns: 1fr;
+    }
+
+    .group-name {
+        position: sticky;
+        top: 0;
+    }
+}
