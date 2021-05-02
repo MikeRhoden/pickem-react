@@ -1,5 +1,6 @@
 .App {
-  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr;
 }
 
 .App-logo {
@@ -28,11 +29,70 @@
   color: #61dafb;
 }
 
+
+.header {
+  color: white;
+  background: black;
+  display: grid;
+  font-weight: bold;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.site-name {
+  display: grid;
+  justify-self: center;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.event-name {
+  display: grid;
+  justify-self: center;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.save-container {
+  display: grid;
+  justify-self: center;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 700px) {
+  .header {
+    grid-template-areas: 
+      "site-name event-name save-container";
+    font-size: 12px;
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    position: sticky;
+    top: 0; 
+  }
+
+  .site-name {
+    grid-area: site-name;
+    justify-content: start;
+    font-size: 12px;
+    padding: 3px
+  }
+
+  .event-name {
+    grid-area: event-name;
+    justify-content: end;
+    font-size: 12px;
+    padding: 3px;
+  }
+
+  .App {
+    grid-template-rows: 20px auto;
   }
 }

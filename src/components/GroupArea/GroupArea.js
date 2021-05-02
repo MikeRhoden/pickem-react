@@ -7,9 +7,8 @@ export default function GroupArea(props) {
     return (
         <div className="group-area">
             {propositions.map((proposition) => {
-                const key = proposition.year + '-' + proposition.week + '-' + proposition.game
                 return <Proposition
-                    key={key}
+                    key={proposition.key}
                     visitor={proposition.visitor}
                     vis={proposition.vis}
                     home={proposition.home}
@@ -17,7 +16,12 @@ export default function GroupArea(props) {
                     favorite={proposition.favorite}
                     spread={proposition.spread}
                     note={proposition.note}
-                    start={proposition.start} />
+                    start={proposition.start}
+                    matchup={proposition.matchup}
+                    pick={proposition.pick}
+                    info={proposition.info}
+                    group={proposition.group}
+                    onChange={props.onChange} />
             })}
         </div>
     )

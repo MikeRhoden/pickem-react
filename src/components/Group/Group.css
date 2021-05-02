@@ -16,9 +16,13 @@
     font-size: 16px;
     font-weight: bold;
     grid-area: group-name;
-    justify-content: center;
     margin-bottom: 10px;
     padding: 8px 0 8px 0;
+    grid-template-columns: auto 60px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    gap: 5px;
 }
 
 .group-area1 {
@@ -29,6 +33,19 @@
 .group-area2 {
     grid-area: group-area2;
     justify-self: center;
+}
+
+button.save-event {
+    background-color: #66AA22;
+    border-radius: 1px;
+    border: 3px solid white;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    padding: 3px;
+    transition: all 0.5s;
+    cursor: pointer;
+    box-sizing: border-box;
 }
 
 @media (max-width: 700px) {
@@ -42,6 +59,11 @@
 
     .group-name {
         position: sticky;
-        top: 0;
+        top: 20px;
+        justify-content: unset;
+    }
+
+    .save-event-container {
+        justify-self: end;
     }
 }

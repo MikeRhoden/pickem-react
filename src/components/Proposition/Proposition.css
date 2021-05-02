@@ -47,6 +47,10 @@
     padding: 3px;
 }
 
+.tooLate {
+    background: lightsteelblue;
+}
+
 .proposition-weight {
     align-content: center;
     border: 1px solid #000000;
@@ -65,7 +69,7 @@
     justify-self: center;
 }
 
-button {
+.reset {
     align-items: normal;
     background-color: rgba(0,0,0,0);
     border-color: rgb(0, 0, 238);
