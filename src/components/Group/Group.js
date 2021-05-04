@@ -21,7 +21,10 @@ export default function Group(props) {
                     <button
                         className="save-event"
                         onClick={props.onSave}>Save</button>
-               </div>
+                    <div className="event-units" style={ hasExceededMaxUnits ? {color: 'indianred'} : {color: 'lightgreen'}} >
+                        {totalUnits}/{maxUnits}
+                    </div>
+                </div>
             </div>
             <div className="group-area1">
                 <GroupArea

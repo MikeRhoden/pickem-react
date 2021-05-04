@@ -14,7 +14,7 @@ export default function Event(props) {
     const optionalGames = propositions.filter( p => p.group.name === 'optional')
     const sumTotalUnits = () => {
         const units = propositions.map( (p) => {
-            return p.pick.units
+            return Number(p.pick.units)
         })
         return units.reduce( (sum, value) => {
             return sum + value
@@ -47,20 +47,42 @@ export default function Event(props) {
         if (name === 'matchup')
             proposition.pick.selection = value
         if (name === 'clear') {
-            proposition.pick.selection = ''
-            proposition.pick.units = value
+            if (proposition.group.name === 'required') {
+                proposition.pick.selection = proposition.matchup.vis
+                proposition.pick.units = value
+            }
+            if (proposition.group.name === 'optional') {
+                proposition.pick.selection = ''
+                proposition.pick.units = 0
+            }
         }
 
         setPropositions(p)
-        console.log(propositions)
     }
 
     const handleSave = () => {
+        let invalid = false
+        for (let p of propositions) {
+            if (p.pick.selection === '' && p.pick.units > 0) {
+                alert('Can\'t save.  Please make a pick for the ' + p.matchup.visitor + ' vs ' + p.matchup.home + ' game.')
+                invalid = true
+                break
+            }            
+            if (p.pick.selection !== '' && p.pick.units === 0) {
+                alert('Can\'t save.  Please select units for the ' + p.matchup.visitor + ' vs ' + p.matchup.home + ' game.')
+                invalid = true
+                break
+            }
+        }
+
+        if (invalid) {
+            return
+        }
+
         if (totalUnits > maxUnits) {
             alert('Can\'t save.  You are over 200 units.')
             return
         }
-        alert('ok')
     }
 
     return (
