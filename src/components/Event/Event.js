@@ -7,11 +7,20 @@ import MockPropositions from './MockPropositions.js'
 export default function Event(props) {
     const id = props.event.id
     const start = props.event.start
-    const name = props.event.name
     const maxUnits = props.event.maxUnits
+
     const [ propositions, setPropositions ] = useState(MockPropositions(id))
     const requiredGames = propositions.filter( p => p.group.name === 'required')
     const optionalGames = propositions.filter( p => p.group.name === 'optional')
+    const sumTotalUnits = () => {
+        const units = propositions.map( (p) => {
+            return p.pick.units
+        })
+        return units.reduce( (sum, value) => {
+            return sum + value
+        })
+    }    
+    const totalUnits = sumTotalUnits()
 
     const handleChange = e => {
         //todo check time
@@ -46,17 +55,33 @@ export default function Event(props) {
         console.log(propositions)
     }
 
+    const handleSave = () => {
+        if (totalUnits > maxUnits) {
+            alert('Can\'t save.  You are over 200 units.')
+            return
+        }
+        alert('ok')
+    }
+
     return (
         <div className="event">
             <div className="group1">
                 <Group
                     groupName={'Required Games'}
-                    propositions={requiredGames} onChange={ e => handleChange(e)} />
+                    propositions={requiredGames}
+                    maxUnits={maxUnits}
+                    totalUnits={totalUnits}
+                    onChange={ e => handleChange(e) }
+                    onSave={ () => handleSave() } />
             </div>
             <div className="group2">
                 <Group
                     groupName={'Optional Games'}
-                    propositions={optionalGames} onChange={ e => handleChange(e)}  />
+                    propositions={optionalGames}
+                    maxUnits={maxUnits}
+                    totalUnits={totalUnits}
+                    onChange={ e => handleChange(e) }
+                    onSave={ () => handleSave() } />
             </div>
         </div>
     )
