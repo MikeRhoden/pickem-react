@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Switch} from 'react-router-dom';
 
 import './App.css';
 
-import Event from '../Event/Event'
+import EventWrapper from '../Event/EventWrapper'
 import Login from '../Login/Login';
 import useUser from './useUser';
 
@@ -14,9 +14,9 @@ function App() {
   }
 
   const event = {
-    id: 1,
-    start: new Date('September 6, 2020 11:00:00'),
-    name: 'Pickem 2020: Week 1',
+    id: '2010-1',
+    start: new Date('September 4, 2010 10:00 AM'),
+    name: 'Pickem 2010: Week 1',
     maxUnits: 200
   }
 
@@ -33,7 +33,7 @@ function App() {
                 {event.name}
               </div>
             </div>
-            <Event event={event} />
+            <EventWrapper event={event} />
           </div>
         </Route>
       </Switch>

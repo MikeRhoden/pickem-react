@@ -1,15 +1,14 @@
 import { useState, React } from 'react'
 import Group from '../Group/Group'
 import './Event.css'
-import MockPropositions from './MockPropositions.js'
-
 
 export default function Event(props) {
-    const id = props.event.id
-    const start = props.event.start
+    const eventId = props.event.id
+    const eventStart = props.event.start
     const maxUnits = props.event.maxUnits
+//    const [eventYear, eventWeek] = eventId.split('-')
+    const [ propositions, setPropositions ] = useState(props.propositions)
 
-    const [ propositions, setPropositions ] = useState(MockPropositions(id))
     const requiredGames = propositions.filter( p => p.group.name === 'required')
     const optionalGames = propositions.filter( p => p.group.name === 'optional')
     const sumTotalUnits = () => {
@@ -32,12 +31,12 @@ export default function Event(props) {
         const proposition = p[index - 1]
 
         // todo: change this date to new Date() to return current time
-        if (new Date('September 5, 2020 11:00:00') > start) {
+        if (new Date('September 3, 2010 10:00:00') > eventStart) {
             alert('this week\'s deadline has passed')
             return
         }
         // todo: change this date to new Date() to return current time
-        if (new Date('September 5, 2020 11:00:00') > proposition.info.start) {
+        if (new Date('September 3, 2010 10:00:00') > proposition.info.start) {
             alert('this game has already started')
             return
         }
