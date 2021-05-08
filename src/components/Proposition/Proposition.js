@@ -51,27 +51,31 @@ export default function Proposition(props) {
         <div className={'proposition' + (isTooLate ? ' tooLate' : '')}>
             <div className="proposition-pick">
                 <div className="proposition-visitor">
-                    <input
-                        type="radio" 
-                        name={'matchup-' + number}
-                        value={vis}
-                        checked={props.pick.selection === vis}
-                        onChange={props.onChange}
-                        disabled={isTooLate ? 'disabled' : ''} />
-                    <span className="visitor">{visitor}</span>
+                    <label htmlFor={vis + '-radio'}>
+                        <input
+                            id={vis + '-radio'}
+                            type="radio" 
+                            name={'matchup-' + number}
+                            value={vis}
+                            checked={props.pick.selection === vis}
+                            onChange={props.onChange}
+                            disabled={isTooLate ? 'disabled' : ''} />
+                        {visitor}</label>
                 </div>
                 <div className="spread">
                     <span>{visitorSpread}</span>
                 </div>
                 <div className="proposition-home">
-                    <input
-                        type="radio"
-                        name={'matchup-' + number}
-                        value={ho}
-                        checked={props.pick.selection === ho}
-                        onChange={props.onChange}
-                        disabled={isTooLate ? 'disabled' : ''} />
-                    <span className="home">{home}</span>
+                    <label htmlFor={ho + '-radio'}>
+                        <input
+                            id={ho + '-radio'}
+                            type="radio"
+                            name={'matchup-' + number}
+                            value={ho}
+                            checked={props.pick.selection === ho}
+                            onChange={props.onChange}
+                            disabled={isTooLate ? 'disabled' : ''} />
+                        {home}</label>
                 </div>
                 <div className="spread">
                     <span>{homeSpread}</span>
