@@ -3,7 +3,8 @@ import Proposition from './Proposition'
 
 describe('Proposition use cases', () => {
     const key = '2010-1-1'
-    const matchup = {
+
+    let matchup = {
         'number': 1,
         'home': 'Kansas St',
         'ho': 'KSU',
@@ -12,16 +13,15 @@ describe('Proposition use cases', () => {
         'favorite': 'KSU',
         'spread': 18.5
     }
-
-    const pick = {
-        'selection': 'KSU',
-        'units': 20
-    }
-
-    const info = {
+    
+    let info = {
         'start': new Date('September 4, 2010 13:00'),
         'note': 'Sunflower Showdown',
         'pickEarly': true
+    }
+    const pick = {
+        'selection': 'KSU',
+        'units': 20
     }
 
     const group = {
@@ -33,6 +33,7 @@ describe('Proposition use cases', () => {
     const mockOnChange = jest.fn()
 
     test('Loading a standard proposition should render correctly.', () => {
+
         render(<Proposition
                     key={key}
                     matchup={matchup}
@@ -41,7 +42,6 @@ describe('Proposition use cases', () => {
                     group={group}
                     onChange={mockOnChange} />)
 
-        screen.debug()
         expect(screen.getByLabelText('Kansas')).toBeInTheDocument()
         expect(screen.getByLabelText('Kansas')).toHaveAttribute('id', 'KU-radio')
         expect(screen.getByLabelText('Kansas').parentElement.parentElement).toHaveClass('proposition-visitor')
@@ -58,4 +58,37 @@ describe('Proposition use cases', () => {
 
         expect(screen.getByRole('combobox')).toHaveValue('20')
     })
+
+    test('Proposition that does not need to be picked early should not show pick by time', () => {
+
+        info.pickEarly = false
+
+        render(<Proposition
+            key={key}
+            matchup={matchup}
+            pick={pick}
+            info={info}
+            group={group}
+            onChange={mockOnChange} />)
+
+        expect(screen.queryByText(/pick by/i)).toBeNull()
+    })
+
+    test('Proposition with visitor favorite should show spread along side visitor.', () => {
+        matchup.favorite = 'KU'
+ 
+        render(<Proposition
+            key={key}
+            matchup={matchup}
+            pick={pick}
+            info={info}
+            group={group}
+            onChange={mockOnChange} />)
+
+            expect(screen.getByText('(-18.5)').parentElement).toHaveClass('spread')
+            expect(screen.getByText('(-18.5)').parentElement.previousSibling).toHaveClass('proposition-visitor')
+    })
+
+    // test too late
+    // test unit options
 })
