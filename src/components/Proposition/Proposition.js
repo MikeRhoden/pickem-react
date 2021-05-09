@@ -19,9 +19,7 @@ export default function Proposition(props) {
     const start = props.info.start
     const pickEarly = props.info.pickEarly
 
-    // todo: change this date to new Date() to return current time
-    const currentTime = new Date('September 3, 2010 10:00:00')
-    const isTooLate = start < currentTime
+    const isTooLate = start < props.currentTime
 
     const formatPickEarlyStart = (start) => {
         const m = start.getMonth() + 1
