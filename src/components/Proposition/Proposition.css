@@ -96,11 +96,11 @@
   /* but anchors are highlighted via the focus pseudo-class. */
   
   @supports (-moz-appearance:none) { /* Mozilla-only */
-    button::-moz-focus-inner { /* reset any predefined properties */ 
+    button.reset::-moz-focus-inner { /* reset any predefined properties */ 
       border: none;
       padding: 0;
     }
-    button:focus { /* add outline to focus pseudo-class */
+    button.reset:focus { /* add outline to focus pseudo-class */
       outline-style: dotted;
       outline-width: thin;
     }

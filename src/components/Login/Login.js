@@ -181,7 +181,10 @@ export default function Login({setToken}) {
                     </label>
                     <p>
                         <button type="submit">Submit</button>
-                        <a href="#" onClick={handleLoginClick} style={{display: 'inline', marginLeft: '1em'}}>back to log in</a>
+                        <button
+                            className="toggleLogin"
+                            onClick={handleLoginClick}
+                            style={{display: 'inline', marginLeft: '1em'}}>back to log in</button>
                     </p>
                 </form>
                 <div className="login-error" style={errorStyle}>
@@ -211,7 +214,10 @@ export default function Login({setToken}) {
                     </label>
                     <p>
                         <button type="submit" name="submit">Submit</button>
-                        <a href="#" onClick={handleSignUpClick} style={{display: 'inline', marginLeft: '1em'}}>or sign up</a>
+                        <button
+                            className="toggleLogin"
+                            onClick={handleSignUpClick}
+                            style={{display: 'inline', marginLeft: '1em'}}>or sign up</button>
                     </p>
                 </form>
                 <div className="login-error" style={errorStyle}>
