@@ -1,4 +1,4 @@
-export default function MockPropositions(eventId) {
+export default function MockPropositions() {
     const p = [
         {
             'visitor': 'Auburn',

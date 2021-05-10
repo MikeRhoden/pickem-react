@@ -1,5 +1,5 @@
 import React from 'react'
-import GroupArea from '../GroupArea/GroupArea'
+import GroupArea from './GroupArea'
 import './Group.css'
 
 export default function Group(props) {
@@ -19,6 +19,7 @@ export default function Group(props) {
                 </div>
                 <div className="save-event-container">
                     <button
+                        name="save"
                         className="save-event"
                         onClick={props.onSave}>Save</button>
                     <div className="event-units" style={ hasExceededMaxUnits ? {color: 'indianred'} : {color: 'lightgreen'}} >

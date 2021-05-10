@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Proposition from './Proposition'
 
@@ -151,6 +151,5 @@ describe('Proposition use cases', () => {
         const selectUnits = screen.getByRole('combobox')
         userEvent.selectOptions(selectUnits, '15')
         expect(mockOnChange).toBeCalledTimes(3)
-
     })
 })
