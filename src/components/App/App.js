@@ -13,9 +13,6 @@ function App() {
     return <Login setToken={setUserId} />
   }
 
-  // todo: change this date to new Date() to return current time
-  const currentTime = new Date('September 4, 2010 10:01:00')
-  
   const event = {
     id: '2010-1',
     start: new Date('September 4, 2010 10:00 AM'),
@@ -36,7 +33,7 @@ function App() {
                 {event.name}
               </div>
             </div>
-            <EventWrapper event={event} currentTime={currentTime} />
+            <EventWrapper event={event} />
           </div>
         </Route>
       </Switch>

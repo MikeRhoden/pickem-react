@@ -9,7 +9,7 @@ export default function EventWrapper(props) {
     const eventId = props.event.id
     const eventStart = props.event.start
     const [eventYear, eventWeek] = eventId.split('-')
-    const eventLoadTime = props.currentTime
+    const eventLoadTime = new Date('September 1, 2010 09:59:00') //todo: change this to new Date(Date.now())
     const isTooLate = eventLoadTime > eventStart
 
     useEffect(() => {
@@ -74,16 +74,10 @@ export default function EventWrapper(props) {
         )
     }
 
-    const getCurrentTime = () => {
-        //return new Date('September 1, 2000 01:00:00')
-        return new Date()
-    }
-
     return (
         <Event
             event={props.event}
-            propositions={propositions}
-            getCurrentTime={() => getCurrentTime()} />
+            propositions={propositions} />
     )
 
 }

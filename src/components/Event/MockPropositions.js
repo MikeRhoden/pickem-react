@@ -317,7 +317,8 @@ export default function MockPropositions(mockLoadEventTimeStamp, isTooLate? = fa
             },
             'pick':  { 
                 'selection': x.game % 2 === 0 ? x.ho : x.vis,
-                'units': x.game < 11 ? 15 : 5
+                'units': x.game < 11 ? 15 : 5,
+                'isChanged': false
             },
             'info': {
                 'start': setStart(x.game),

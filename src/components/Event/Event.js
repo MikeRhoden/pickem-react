@@ -40,7 +40,7 @@ export default function Event(props) {
         const p = propositions.slice()
         const proposition = p[index - 1]
 
-        const currentTime = props.getCurrentTime()
+        const currentTime = new Date(Date.now())
         if (currentTime > eventStart) {
             p.forEach(proposition => {
                 proposition.isTooLate = true
@@ -89,13 +89,15 @@ export default function Event(props) {
                 proposition.pick.units = 0
             }
         }
+        proposition.pick.isChanged = true
         setIsSaved(false)
         setPropositions(p)
     }
 
     const handleSave = () => {
-        console.log('Aaaaaaaa')
+        const currentTime = new Date(Date.now())
         if (currentTime > eventStart) {
+            const p = propositions.slice()
             p.forEach(proposition => {
                 proposition.isTooLate = true
             });
@@ -113,22 +115,41 @@ export default function Event(props) {
             return        
         }
         
+        let messages = [];
         let invalid = false
-        for (let p of propositions) {
-            if (p.pick.selection === '' && p.pick.units > 0) {
-                alert('Can\'t save.  Please make a pick for the ' + p.matchup.visitor + ' vs ' + p.matchup.home + ' game.')
+        const p = propositions.slice()
+        for (let proposition of p) {
+            if (proposition.pick.isChanged && currentTime > proposition.info.start) {
+                messages.push(proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game has already started.')
+                proposition.pick.isChanged = false
+                proposition.isTooLate = true
                 invalid = true
-                break
+            }
+            if (proposition.pick.selection === '' && proposition.pick.units > 0) {
+                messages.push('Can\'t save.  Please make a pick for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')
+                invalid = true
             }            
-            if (p.pick.selection !== '' && p.pick.units === 0) {
-                alert('Can\'t save.  Please select units for the ' + p.matchup.visitor + ' vs ' + p.matchup.home + ' game.')
+            if (proposition.pick.selection !== '' && proposition.pick.units === 0) {
+                messages.push('Can\'t save.  Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')
                 invalid = true
-                break
             }
         }
 
         if (invalid) {
-            return
+            setModalContentLabel('Error saving.')
+            setModalContentElement(
+                <div className="modal-content-container">
+                <div className="modal-content">
+                {messages.map( (message) => {
+                    return <p>{message}</p>
+                })}
+                <button onClick={() => handleCloseModal()}>Ok</button>
+                </div>
+                </div>
+            )
+            setPropositions(p)
+            setShouldShowModal(true)
+            return   
         }
 
         if (totalUnits > maxUnits) {
