@@ -57,7 +57,7 @@ describe('Proposition use cases', () => {
                     pick={pick}
                     info={info}
                     group={group}
-                    currentTime={currentTime}
+                    isTooLate={false}
                     onChange={mockOnChange} />)
 
         expect(screen.getByLabelText('Kansas')).toBeInTheDocument()
@@ -90,7 +90,7 @@ describe('Proposition use cases', () => {
             pick={pick}
             info={info}
             group={group}
-            currentTime={currentTime}
+            isTooLate={false}
             onChange={mockOnChange} />)
 
         expect(screen.queryByText(/pick by/i)).toBeNull()
@@ -105,7 +105,7 @@ describe('Proposition use cases', () => {
             pick={pick}
             info={info}
             group={group}
-            currentTime={currentTime}
+            isTooLate={false}
             onChange={mockOnChange} />)
 
         expect(screen.getByText('(-18.5)').parentElement).toHaveClass('spread')
@@ -121,7 +121,7 @@ describe('Proposition use cases', () => {
             pick={pick}
             info={info}
             group={group}
-            currentTime={currentTime}
+            isTooLate={true}
             onChange={mockOnChange} />)
         
         expect(screen.getByLabelText('Kansas')).toBeDisabled()
@@ -137,7 +137,7 @@ describe('Proposition use cases', () => {
             pick={pick}
             info={info}
             group={group}
-            currentTime={currentTime}
+            isTooLate={false}
             onChange={mockOnChange} />)
 
         const radioKu = screen.getByLabelText('Kansas')

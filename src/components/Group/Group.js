@@ -3,6 +3,8 @@ import GroupArea from './GroupArea'
 import './Group.css'
 
 export default function Group(props) {
+    const isSaved = props.isSaved
+    const saveBGColor = isSaved ? '#CCCCCC' : '#0099CC'
     const propositions = props.propositions
     const pivot = Math.floor(propositions.length / 2)
     const group1 = propositions.slice(0, pivot)
@@ -19,9 +21,11 @@ export default function Group(props) {
                 </div>
                 <div className="save-event-container">
                     <button
+                        disabled={isSaved}
                         name="save"
                         className="save-event"
-                        onClick={props.onSave}>Save</button>
+                        style={{backgroundColor: saveBGColor}}
+                        onClick={props.onSave}>{isSaved ? 'Saved': 'Save'}</button>
                     <div className="event-units" style={ hasExceededMaxUnits ? {color: 'indianred'} : {color: 'lightgreen'}} >
                         {totalUnits}/{maxUnits}
                     </div>

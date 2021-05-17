@@ -8,8 +8,9 @@ export default function EventWrapper(props) {
     const [ propositions, setPropositions ] = useState([])
     const eventId = props.event.id
     const eventStart = props.event.start
-    console.log("ES" + eventStart)
     const [eventYear, eventWeek] = eventId.split('-')
+    const eventLoadTime = props.currentTime
+    const isTooLate = eventLoadTime > eventStart
 
     useEffect(() => {
         let mounted = true
@@ -30,6 +31,7 @@ export default function EventWrapper(props) {
                 
                         const y = {
                             'key': eventYear + '-' + eventWeek + '-' + x.game,
+                            'isTooLate': new Date(x.start) < eventLoadTime || isTooLate,
                             'matchup': {
                                 'number': x.game,
                                 'home': x.home,
@@ -72,8 +74,16 @@ export default function EventWrapper(props) {
         )
     }
 
+    const getCurrentTime = () => {
+        //return new Date('September 1, 2000 01:00:00')
+        return new Date()
+    }
+
     return (
-        <Event event={props.event} propositions={propositions} />
+        <Event
+            event={props.event}
+            propositions={propositions}
+            getCurrentTime={() => getCurrentTime()} />
     )
 
 }

@@ -6,6 +6,32 @@
     justify-self: center;
 }
 
+.modal-content-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.modal-content {
+    margin: auto;
+    width: 60%;
+    display: grid;
+    justify-content: center;
+    background: black;
+    border: 1px solid white;
+    padding: 10px;
+    color: #0099CC;
+}
+
+button .modal-button {
+    width: fit-content;
+    padding: 5px;
+    cursor: pointer;
+    display: grid;
+    justify-self: center;
+}
+
 .group1 {
     grid-area: group1;
 }

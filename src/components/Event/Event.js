@@ -1,13 +1,20 @@
 import { useState, React } from 'react'
+import ReactModal from 'react-modal'
 import Group from '../Group/Group'
 import './Event.css'
 
 export default function Event(props) {
+
+    const [ propositions, setPropositions ] = useState(props.propositions)
+    const [ isSaved, setIsSaved ] = useState(true)
+    const [ shouldShowModal, setShouldShowModal ] = useState(false)
+    const [ modalContentLabel, setModalContentLabel ] = useState('') 
+    const [ modalContentElement, setModalContentElement] = useState(<> </>)
+
     const eventId = props.event.id
     const eventStart = props.event.start
     const maxUnits = props.event.maxUnits
-//    const [eventYear, eventWeek] = eventId.split('-')
-    const [ propositions, setPropositions ] = useState(props.propositions)
+    // const [eventYear, eventWeek] = eventId.split('-')
 
     const requiredGames = propositions.filter( p => p.group.name === 'required')
     const optionalGames = propositions.filter( p => p.group.name === 'optional')
@@ -21,8 +28,11 @@ export default function Event(props) {
     }    
     const totalUnits = sumTotalUnits()
 
+    const handleCloseModal = () => {
+        setShouldShowModal(false)
+    }
+
     const handleChange = e => {
-        //todo check time
         const name = e.target.name.split('-')[0]
         const index = Number(e.target.name.split('-')[1])
         const value = e.target.value
@@ -30,14 +40,38 @@ export default function Event(props) {
         const p = propositions.slice()
         const proposition = p[index - 1]
 
-        // todo: change this date to new Date() to return current time
-        if (new Date('September 3, 2010 10:00:00') > eventStart) {
-            alert('this week\'s deadline has passed')
-            return
+        const currentTime = props.getCurrentTime()
+        if (currentTime > eventStart) {
+            p.forEach(proposition => {
+                proposition.isTooLate = true
+            });
+            setPropositions(p)
+            setModalContentLabel('Event has already started.')
+            setModalContentElement(
+                <div className="modal-content-container">
+                <div className="modal-content">
+                <p>Event has already started.</p>
+                <button onClick={() => handleCloseModal()}>Ok</button>
+                </div>
+                </div>
+            )
+            setShouldShowModal(true)
+            return        
         }
-        // todo: change this date to new Date() to return current time
-        if (new Date('September 3, 2010 10:00:00') > proposition.info.start) {
-            alert('this game has already started')
+
+        if (currentTime > proposition.info.start) {
+            proposition.isTooLate = true
+            setPropositions(p)
+            setModalContentLabel('Can\'t change game.')
+            setModalContentElement(
+                <div className="modal-content-container">
+                <div className="modal-content">
+                <p>Game {index} has already started.</p>
+                <button onClick={() => handleCloseModal()}>Ok</button>
+                </div>
+                </div>
+            )
+            setShouldShowModal(true)
             return
         }
 
@@ -55,11 +89,30 @@ export default function Event(props) {
                 proposition.pick.units = 0
             }
         }
-
+        setIsSaved(false)
         setPropositions(p)
     }
 
     const handleSave = () => {
+        console.log('Aaaaaaaa')
+        if (currentTime > eventStart) {
+            p.forEach(proposition => {
+                proposition.isTooLate = true
+            });
+            setPropositions(p)
+            setModalContentLabel('Event has already started.')
+            setModalContentElement(
+                <div className="modal-content-container">
+                <div className="modal-content">
+                <p>Event has already started.</p>
+                <button onClick={() => handleCloseModal()}>Ok</button>
+                </div>
+                </div>
+            )
+            setShouldShowModal(true)
+            return        
+        }
+        
         let invalid = false
         for (let p of propositions) {
             if (p.pick.selection === '' && p.pick.units > 0) {
@@ -82,12 +135,15 @@ export default function Event(props) {
             alert('Can\'t save.  You are over 200 units.')
             return
         }
+
+        setIsSaved(true)
     }
 
     return (
         <div className="event">
             <div className="group1">
                 <Group
+                    isSaved={isSaved}
                     groupName={'Required Games'}
                     propositions={requiredGames}
                     maxUnits={maxUnits}
@@ -97,6 +153,7 @@ export default function Event(props) {
             </div>
             <div className="group2">
                 <Group
+                    isSaved={isSaved}
                     groupName={'Optional Games'}
                     propositions={optionalGames}
                     maxUnits={maxUnits}
@@ -104,6 +161,11 @@ export default function Event(props) {
                     onChange={ e => handleChange(e) }
                     onSave={ () => handleSave() } />
             </div>
+            <ReactModal
+                isOpen={shouldShowModal}
+                contentLabel={modalContentLabel}
+                contentElement={() => modalContentElement} >
+            </ReactModal>
         </div>
     )
 }

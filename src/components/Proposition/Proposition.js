@@ -19,7 +19,7 @@ export default function Proposition(props) {
     const start = props.info.start
     const pickEarly = props.info.pickEarly
 
-    const isTooLate = start < props.currentTime
+    const isTooLate = props.isTooLate
 
     const formatPickEarlyStart = (start) => {
         const m = start.getMonth() + 1
@@ -30,12 +30,7 @@ export default function Proposition(props) {
         return 'pick by: ' + m + '/' + d + '/' + y + ' ' + h + ':' + (mi < 10 ? '0' + mi : mi)
     }
 
-    const pickUnits = []
-    for (let i = props.group.minUnitsAllowed; i <= props.group.maxUnitsAllowed; i++)
-        pickUnits.push(i)
-    const pickUnitOptions = pickUnits.map((unit) => {
-        return <option key={unit} value={unit}>{unit}</option>
-    })
+    const pickUnitOptions = GetPickUnitOptions()
 
     const clearButton = !isTooLate ? (
         <button
@@ -103,4 +98,15 @@ export default function Proposition(props) {
             </div>
         </div>
     )
+
+    function GetPickUnitOptions() {
+        const pickUnits = []
+        for (let i = props.group.minUnitsAllowed; i <= props.group.maxUnitsAllowed; i++) {
+            pickUnits.push(i)
+        }
+        const pickUnitOptions = pickUnits.map((unit) => {
+            return <option key={unit} value={unit}>{unit}</option>
+        })
+        return pickUnitOptions
+    }
 }

@@ -1,4 +1,4 @@
-export default function MockPropositions() {
+export default function MockPropositions(mockLoadEventTimeStamp, isTooLate? = false) {
     const p = [
         {
             'visitor': 'Auburn',
@@ -305,6 +305,7 @@ export default function MockPropositions() {
     return p.map( (x) => {
         const y = {
             'key': x.year + '-' + x.week + '-' + x.game,
+            'isTooLate': setStart(x.game) < mockLoadEventTimeStamp || isTooLate,
             'matchup': {
                 'number': x.game,
                 'home': x.home,

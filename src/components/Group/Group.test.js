@@ -4,7 +4,7 @@ import MockPropositions from '../Event/MockPropositions'
 import Group from './Group'
 
 describe('Group use cases.', () => {
-    const propositions = MockPropositions()
+    const propositions = MockPropositions(new Date('September 4, 2020 22:30:00'))
     const requiredGames = propositions.filter( p => p.group.name === 'required')
     let maxUnits = 200
     let totalUnits = 200
@@ -12,8 +12,8 @@ describe('Group use cases.', () => {
     const mockOnSave = jest.fn()
 
     beforeEach(() => {
-        let maxUnits = 200
-        let totalUnits = 200      
+        maxUnits = 200
+        totalUnits = 200      
     })
 
     test('Standard group should render and behave correctly.', () => {
