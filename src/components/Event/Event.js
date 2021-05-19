@@ -154,7 +154,6 @@ export default function Event(props) {
                 <div className="modal-content-container">
                 <div className="modal-content">
                 {messages.map( (message) => {
-                    console.log(message)
                     return <p key={message}>{message}</p>
                 })}
                 <button onClick={() => handleCloseModal()}>Ok</button>

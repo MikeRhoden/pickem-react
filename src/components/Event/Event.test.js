@@ -42,21 +42,35 @@ describe('Event use cases (with all games selected and max units selected)', () 
             .mockImplementation(() => earliestSaveTime.valueOf()
         );
 
-        expect(screen.queryAllByRole('combobox')[10]).toHaveValue('5')
-        expect(screen.getByRole('radio', { name: /washington/i })).not.toBeChecked()
-        expect(screen.getByRole('radio', { name: /boise st/i })).toBeChecked()
+        const unitSelector = screen.queryAllByRole('combobox')[10]
+        const washingtonRadio = screen.getByRole('radio', { name: /washington/i })
+        const boiseStRadio = screen.getByRole('radio', { name: /boise st/i })
 
-        userEvent.click(screen.queryAllByRole('button', {name: /clear/})[10])
-        expect(screen.getByRole('radio', { name: /washington/i })).not.toBeChecked()
-        expect(screen.queryAllByRole('combobox')[10]).toHaveValue('0')
-        expect(screen.getByRole('radio', { name: /boise st/i })).not.toBeChecked()
+        const clearButton = screen.queryAllByRole('button', {name: /clear/})[10]
+        userEvent.click(clearButton)
+        expect(washingtonRadio).not.toBeChecked()
+        expect(unitSelector).toHaveValue('0')
+        expect(boiseStRadio).not.toBeChecked()
 
-        userEvent.click(screen.getByRole('radio', { name: /washington/i }))
-        userEvent.click(screen.queryAllByRole('button', {name: /save/i})[1])
-
+        userEvent.click(washingtonRadio)
+        const saveButton = screen.queryAllByRole('button', {name: /save/i})[1]
+        userEvent.click(saveButton)
         expect(screen.getByText('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.'))
         userEvent.click(screen.getByRole('button', {name: /ok/i}))
         expect(screen.queryByText('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')).not.toBeInTheDocument()
+
+        userEvent.click(boiseStRadio)
+        userEvent.click(saveButton)
+        expect(screen.getByText('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.'))
+        userEvent.click(screen.getByRole('button', {name: /ok/i}))
+        expect(screen.queryByText('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')).not.toBeInTheDocument()
+
+        userEvent.click(clearButton)
+        userEvent.selectOptions(unitSelector, '5')
+        userEvent.click(saveButton)
+        expect(screen.getByText('Can\'t save. Please make a pick for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.'))
+        userEvent.click(screen.getByRole('button', {name: /ok/i}))
+        expect(screen.queryByText('Can\'t save. Please make a pick for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')).not.toBeInTheDocument()
      })
 
     test('Matchup changed before matchup start and saved after matchup start should alert and prevent matchup changes from saving.', () => {
@@ -93,10 +107,9 @@ describe('Event use cases (with all games selected and max units selected)', () 
         userEvent.click(screen.getByRole('button', {name: /ok/i}))
         expect(screen.queryByText(p.matchup.visitor + ' vs ' + p.matchup.home + ' game has already started.')).not.toBeInTheDocument()
 
-        const newHomeRadioForLateGame = screen.getByRole('radio', { name: /washington/i })
-        const disabledPropositionElement = newHomeRadioForLateGame.closest('.proposition')
+        const disabledPropositionElement = homeRadioForLateGame.closest('.proposition')
         expectPropositionToBeDisabled(disabledPropositionElement)
-        expect(newHomeRadioForLateGame).not.toBeChecked()
+        expect(homeRadioForLateGame).not.toBeChecked()
     })
 
     test('Event loaded after event start should disable all matchups.', () => {
@@ -144,8 +157,7 @@ describe('Event use cases (with all games selected and max units selected)', () 
         userEvent.click(screen.getByRole('button', {name: /ok/i}))
         expect(screen.queryByText('Event has already started.')).not.toBeInTheDocument()
 
-        const someRadioButton = screen.getByRole('radio', { name: /duke/i })
-        const allPropositionElements = someRadioButton.closest('.event').querySelectorAll('.proposition')
+        const allPropositionElements = homeRadioForLateGame.closest('.event').querySelectorAll('.proposition')
         allPropositionElements.forEach(propositionElement => {
             expectPropositionToBeDisabled(propositionElement)
         });
@@ -173,8 +185,7 @@ describe('Event use cases (with all games selected and max units selected)', () 
         userEvent.click(screen.getByRole('button', {name: /ok/i}))
         expect(screen.queryByText('Event has already started.')).not.toBeInTheDocument()
 
-        const someRadioButton = screen.getByRole('radio', { name: /duke/i })
-        const allPropositionElements = someRadioButton.closest('.event').querySelectorAll('.proposition')
+        const allPropositionElements = homeRadioForLateGame.closest('.event').querySelectorAll('.proposition')
         allPropositionElements.forEach(propositionElement => {
             expectPropositionToBeDisabled(propositionElement)
         });
@@ -214,7 +225,7 @@ describe('Event use cases (with all games selected and max units selected)', () 
         userEvent.click(screen.getByRole('button', {name: /ok/i}))
         expect(screen.queryByText('Game 11 has already started.')).not.toBeInTheDocument()
 
-        const disabledPropositionElement = screen.getByRole('radio', { name: /washington/i }).closest('.proposition')
+        const disabledPropositionElement = hoRadio.closest('.proposition')
         expectPropositionToBeDisabled(disabledPropositionElement)
     })
 
@@ -246,7 +257,7 @@ describe('Event use cases (with all games selected and max units selected)', () 
             .mockImplementationOnce(() => earliestSaveTime.valueOf()
         );
         const unitsToClear = screen.queryAllByRole('combobox')[10].value
-        userEvent.click(screen.queryAllByRole('button', {name: /clear/})[10]) //clear first optoinal game
+        userEvent.click(clearButtons[10]) //clear first optoinal game
         expect(screen.queryAllByRole('radio', {checked: true}).length).toBe(19)
 
         const totalUnitsSelected = event.maxUnits - unitsToClear
