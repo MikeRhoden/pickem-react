@@ -320,6 +320,11 @@ export default function MockPropositions(mockLoadEventTimeStamp, isTooLate? = fa
                 'units': x.game < 11 ? 15 : 5,
                 'isChanged': false
             },
+            'originalPick':  { 
+                'selection': x.game % 2 === 0 ? x.ho : x.vis,
+                'units': x.game < 11 ? 15 : 5,
+                'isChanged': false
+            },
             'info': {
                 'start': setStart(x.game),
                 'note': x.note,

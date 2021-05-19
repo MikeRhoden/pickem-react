@@ -39,7 +39,8 @@ export default function Event(props) {
 
         const p = propositions.slice()
         const proposition = p[index - 1]
-
+        //event start new Date('September 4, 2010 10:00 AM')
+        // const currentTime = new Date('September 1, 2010 10:00 AM')
         const currentTime = new Date(Date.now())
         if (currentTime > eventStart) {
             p.forEach(proposition => {
@@ -95,6 +96,8 @@ export default function Event(props) {
     }
 
     const handleSave = () => {
+        //event start new Date('September 4, 2010 10:00 AM')
+        //const currentTime = new Date('September 1, 2010 10:00 AM')
         const currentTime = new Date(Date.now())
         if (currentTime > eventStart) {
             const p = propositions.slice()
@@ -121,18 +124,28 @@ export default function Event(props) {
         for (let proposition of p) {
             if (proposition.pick.isChanged && currentTime > proposition.info.start) {
                 messages.push(proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game has already started.')
-                proposition.pick.isChanged = false
+                const originalPick = Object.assign({}, proposition.originalPick);
+                proposition.pick = originalPick
                 proposition.isTooLate = true
+                setPropositions(p)
                 invalid = true
             }
+            // need to test this
             if (proposition.pick.selection === '' && proposition.pick.units > 0) {
                 messages.push('Can\'t save.  Please make a pick for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')
                 invalid = true
-            }            
+            }
+            // need to test this
             if (proposition.pick.selection !== '' && proposition.pick.units === 0) {
                 messages.push('Can\'t save.  Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')
                 invalid = true
             }
+        }
+
+        // need to test this
+        if (totalUnits > maxUnits) {
+            messages.push('Can\'t save.  You are over 200 units.')
+            invalid = true
         }
 
         if (invalid) {
@@ -141,22 +154,26 @@ export default function Event(props) {
                 <div className="modal-content-container">
                 <div className="modal-content">
                 {messages.map( (message) => {
-                    return <p>{message}</p>
+                    console.log(message)
+                    return <p key={message}>{message}</p>
                 })}
                 <button onClick={() => handleCloseModal()}>Ok</button>
                 </div>
                 </div>
             )
-            setPropositions(p)
             setShouldShowModal(true)
             return   
         }
 
-        if (totalUnits > maxUnits) {
-            alert('Can\'t save.  You are over 200 units.')
-            return
+        // need to test this
+        for (let proposition of p) {
+            if (proposition.isChanged) {
+                const pick = Object.assign({}, proposition.pick)
+                pick.isChanged = false
+                proposition.originalPick = pick
+            }
         }
-
+        setPropositions(p)
         setIsSaved(true)
     }
 
@@ -183,6 +200,7 @@ export default function Event(props) {
                     onSave={ () => handleSave() } />
             </div>
             <ReactModal
+                appElement={document.querySelector('.event')}
                 isOpen={shouldShowModal}
                 contentLabel={modalContentLabel}
                 contentElement={() => modalContentElement} >

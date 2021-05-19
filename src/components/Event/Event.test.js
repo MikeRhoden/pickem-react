@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import MockPropositions from './MockPropositions'
 import Event from './Event'
 import userEvent from '@testing-library/user-event'
+import ReactModal from 'react-modal'
 
 describe('Event use cases (with all games selected and max units selected)', () => {
     // times to test based on MockPropositions
@@ -19,17 +20,57 @@ describe('Event use cases (with all games selected and max units selected)', () 
         maxUnits: 200
     }
 
-    test('Matchup changed before matchup start and saved after matchup start should prevent matchup changes from saving.', () => {
-        const propositions = MockPropositions(earliestLoadTime)
+    beforeEach(() => {
+        jest
+            .spyOn(ReactModal, 'setAppElement')
+            .mockImplementation(() =>
+                ReactModal.setAppElement(document.createElement('div'))
+        );
+    })
 
+    test('Matchup partially selected and saved should alert and prevent matchup save.', () => {
+        const propositions = MockPropositions(earliestLoadTime)
+        const proposition = propositions[10]
+
+        render(<Event
+            event={event}
+            propositions={propositions} />)
+                
+        //earliestSaveTime = new Date('September 1, 2020 10:10 AM')
+        jest
+            .spyOn(global.Date, 'now')
+            .mockImplementation(() => earliestSaveTime.valueOf()
+        );
+
+        expect(screen.queryAllByRole('combobox')[10]).toHaveValue('5')
+        expect(screen.getByRole('radio', { name: /washington/i })).not.toBeChecked()
+        expect(screen.getByRole('radio', { name: /boise st/i })).toBeChecked()
+
+        userEvent.click(screen.queryAllByRole('button', {name: /clear/})[10])
+        expect(screen.getByRole('radio', { name: /washington/i })).not.toBeChecked()
+        expect(screen.queryAllByRole('combobox')[10]).toHaveValue('0')
+        expect(screen.getByRole('radio', { name: /boise st/i })).not.toBeChecked()
+
+        userEvent.click(screen.getByRole('radio', { name: /washington/i }))
+        userEvent.click(screen.queryAllByRole('button', {name: /save/i})[1])
+
+        expect(screen.getByText('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.'))
+        userEvent.click(screen.getByRole('button', {name: /ok/i}))
+        expect(screen.queryByText('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')).not.toBeInTheDocument()
+     })
+
+    test('Matchup changed before matchup start and saved after matchup start should alert and prevent matchup changes from saving.', () => {
+        const propositions = MockPropositions(earliestLoadTime)
         render(<Event
             event={event}
             propositions={propositions} />)
 
         const homeRadioForLateGame = screen.getByRole('radio', { name: /washington/i })
+        expect(homeRadioForLateGame).not.toBeChecked()
         const enabledPropositionElement = homeRadioForLateGame.closest('.proposition')
         expectPropositionToBeEnabled(enabledPropositionElement)
         const saveButton = screen.queryAllByRole('button', {name: /save/i})[0]
+        
 
         //earliestLoadTime = new Date('September 6, 2020 10:59:00')
         jest
@@ -38,7 +79,7 @@ describe('Event use cases (with all games selected and max units selected)', () 
         );
         expect(saveButton).toBeDisabled() //because of no changes to save yet
         userEvent.click(homeRadioForLateGame) 
-        expect(saveButton).not.toBeDisabled() //because changed matchup radio selection
+        expect(saveButton).not.toBeDisabled() //enabled because changed matchup radio selection
 
         //pastEarlierStartTime = new Date('September 6, 2020 11:01:00')
         jest
@@ -52,14 +93,15 @@ describe('Event use cases (with all games selected and max units selected)', () 
         userEvent.click(screen.getByRole('button', {name: /ok/i}))
         expect(screen.queryByText(p.matchup.visitor + ' vs ' + p.matchup.home + ' game has already started.')).not.toBeInTheDocument()
 
-        const disabledPropositionElement = screen.getByRole('radio', { name: /washington/i }).closest('.proposition')
+        const newHomeRadioForLateGame = screen.getByRole('radio', { name: /washington/i })
+        const disabledPropositionElement = newHomeRadioForLateGame.closest('.proposition')
         expectPropositionToBeDisabled(disabledPropositionElement)
+        expect(newHomeRadioForLateGame).not.toBeChecked()
     })
 
     test('Event loaded after event start should disable all matchups.', () => {
         const isToolateForEvent = true
         const propositions = MockPropositions(pastEventStartTime, isToolateForEvent)
-
         render(<Event
             event={event}
             propositions={propositions} />)
@@ -73,7 +115,6 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
     test('Event loaded before event start and saved after event start should alert and disable all matchups.', () => {
         const propositions = MockPropositions(beforeEventStartTime)
-
         render(<Event
             event={event}   
             propositions={propositions} />)
@@ -82,7 +123,6 @@ describe('Event use cases (with all games selected and max units selected)', () 
         const enabledPropositionElement = homeRadioForLateGame.closest('.proposition')
         expectPropositionToBeEnabled(enabledPropositionElement)
         const saveButton = screen.queryAllByRole('button', {name: /save/i})[0]
-
 
         //beforeEventStartTime = new Date('September 6, 2020 10:59:00')
         jest
@@ -113,11 +153,6 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
     test('Event loaded before event start and changed after event start should alert and disable all matchups.', () => {
         const propositions = MockPropositions(beforeEventStartTime)
-        //pastEventStartTime = new Date('September 6, 2020 11:01:00')
-        jest
-            .spyOn(global.Date, 'now')
-            .mockImplementationOnce(() => pastEventStartTime.valueOf()
-        );
 
         render(<Event
             event={event}
@@ -127,6 +162,11 @@ describe('Event use cases (with all games selected and max units selected)', () 
         const enabledPropositionElement = homeRadioForLateGame.closest('.proposition')
         expectPropositionToBeEnabled(enabledPropositionElement)
 
+        //pastEventStartTime = new Date('September 6, 2020 11:01:00')
+        jest
+            .spyOn(global.Date, 'now')
+            .mockImplementationOnce(() => pastEventStartTime.valueOf()
+        );
         userEvent.click(homeRadioForLateGame)
 
         expect(screen.getByText('Event has already started.')).toBeInTheDocument()
@@ -144,7 +184,6 @@ describe('Event use cases (with all games selected and max units selected)', () 
     test('Event loaded after matchup start and before event start should disable matchup change or selection.', () => {
         const propositions = MockPropositions(pastEarlyStartTime)
         const dummyCurrentTime = () => { return new Date(Date.now()) }
-
         render(<Event
             event={event}
             propositions={propositions}
@@ -156,12 +195,6 @@ describe('Event use cases (with all games selected and max units selected)', () 
     
     test('Event loaded before matchup start and saved after matchup start should alert and disable change for matchup.', async () => {
         const propositions = MockPropositions(earliestLoadTime)
-        //pastEarlierStartTime = new Date('September 4, 2020 19:31:00')
-        jest
-            .spyOn(global.Date, 'now')
-            .mockImplementationOnce(() => pastEarlierStartTime.valueOf()
-        );
-
         render(<Event
             event={event}
             propositions={propositions} />)
@@ -170,6 +203,11 @@ describe('Event use cases (with all games selected and max units selected)', () 
         const enabledPropositionElement = screen.getByRole('radio', { name: /washington/i }).closest('.proposition')
         expectPropositionToBeEnabled(enabledPropositionElement)
 
+        //pastEarlierStartTime = new Date('September 4, 2020 19:31:00')
+        jest
+            .spyOn(global.Date, 'now')
+            .mockImplementationOnce(() => pastEarlierStartTime.valueOf()
+        );
         userEvent.click(hoRadio)
 
         expect(screen.getByText('Game 11 has already started.')).toBeInTheDocument()
@@ -182,12 +220,6 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
     test('Event loaded at earliest time should show right number of controls and allow for changing.', () => {
         const propositions = MockPropositions(earliestLoadTime)
-        //earliestSaveTime = new Date('September 1, 2020 10:10 AM')
-        jest
-            .spyOn(global.Date, 'now')
-            .mockImplementationOnce(() => earliestSaveTime.valueOf()
-        );
-
         render(<Event
             event={event}
             propositions={propositions} />)
@@ -208,6 +240,11 @@ describe('Event use cases (with all games selected and max units selected)', () 
         expect(savedButtons[0]).toHaveStyle('backgroundColor: #CCCCCC')
         expect(savedButtons[0]).toBeDisabled()
 
+        //earliestSaveTime = new Date('September 1, 2020 10:10 AM')
+        jest
+            .spyOn(global.Date, 'now')
+            .mockImplementationOnce(() => earliestSaveTime.valueOf()
+        );
         const unitsToClear = screen.queryAllByRole('combobox')[10].value
         userEvent.click(screen.queryAllByRole('button', {name: /clear/})[10]) //clear first optoinal game
         expect(screen.queryAllByRole('radio', {checked: true}).length).toBe(19)
