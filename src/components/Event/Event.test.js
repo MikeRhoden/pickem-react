@@ -126,41 +126,60 @@ describe('Event use cases (with all games selected and max units selected)', () 
         });
     })
 
-    test('Event loaded before event start and saved after event start should alert and disable all matchups.', () => {
+    test('Event loaded before event start and saved after event start should alert, revert, and disable all matchups.', () => {
         const propositions = MockPropositions(beforeEventStartTime)
         render(<Event
             event={event}   
             propositions={propositions} />)
 
-        const homeRadioForLateGame = screen.getByRole('radio', { name: /duke/i })
-        const enabledPropositionElement = homeRadioForLateGame.closest('.proposition')
+        const allUnitSelectors = screen.queryAllByRole('combobox')
+        const visRadioForLateGameShouldntSave = screen.getByRole('radio', { name: 'Iowa' })
+        const homeRadioForLateGameShouldntSave = screen.getByRole('radio', { name: /duke/i })
+        const unitSelectorShouldntSave = allUnitSelectors[12]
+        const visRadioForLateGameShouldSave = screen.getByRole('radio', { name: /San Diego St/i })
+        const homeRadioForLateGameShouldSave = screen.getByRole('radio', { name: /Hawaii/i })
+        const unitSelectorShouldSave = allUnitSelectors[13]
+        const enabledPropositionElement = homeRadioForLateGameShouldntSave.closest('.proposition')
         expectPropositionToBeEnabled(enabledPropositionElement)
         const saveButton = screen.queryAllByRole('button', {name: /save/i})[0]
 
         //beforeEventStartTime = new Date('September 6, 2020 10:59:00')
         jest
             .spyOn(global.Date, 'now')
-            .mockImplementationOnce(() => beforeEventStartTime.valueOf()
+            .mockImplementation(() => beforeEventStartTime.valueOf()
         );
-        expect(saveButton).toBeDisabled() //because of no changes to save yet
-        userEvent.click(homeRadioForLateGame) 
-        expect(saveButton).not.toBeDisabled() //because changed matchup radio selection
 
+        expect(visRadioForLateGameShouldSave).not.toBeChecked()
+        expect(unitSelectorShouldSave).toHaveValue('5')
+        userEvent.click(visRadioForLateGameShouldSave)
+        userEvent.selectOptions(unitSelectorShouldSave, '4')
+        userEvent.click(saveButton) // should save these ^ selections
+        expect(visRadioForLateGameShouldSave).toBeChecked()
+        expect(unitSelectorShouldSave).toHaveValue('4')
+
+        userEvent.click(homeRadioForLateGameShouldntSave) 
+        userEvent.selectOptions(unitSelectorShouldntSave, '4')
         //pastEventStartTime = new Date('September 6, 2020 11:01:00')
         jest
             .spyOn(global.Date, 'now')
-            .mockImplementationOnce(() => pastEventStartTime.valueOf()
+            .mockImplementation(() => pastEventStartTime.valueOf()
         );
-        userEvent.click(saveButton)
+        userEvent.click(saveButton) // should not save these selections ^
 
         expect(screen.getByText('Event has already started.')).toBeInTheDocument()
         userEvent.click(screen.getByRole('button', {name: /ok/i}))
         expect(screen.queryByText('Event has already started.')).not.toBeInTheDocument()
 
-        const allPropositionElements = homeRadioForLateGame.closest('.event').querySelectorAll('.proposition')
+        expect(homeRadioForLateGameShouldSave).not.toBeChecked()
+        expect(visRadioForLateGameShouldSave).toBeChecked()
+        expect(unitSelectorShouldSave).toHaveValue('4')
+        expect(visRadioForLateGameShouldntSave).toBeChecked()
+        expect(unitSelectorShouldntSave).toHaveValue('5')
+        const allPropositionElements = homeRadioForLateGameShouldntSave.closest('.event').querySelectorAll('.proposition')
         allPropositionElements.forEach(propositionElement => {
             expectPropositionToBeDisabled(propositionElement)
         });
+        
     })
 
     test('Event loaded before event start and changed after event start should alert and disable all matchups.', () => {

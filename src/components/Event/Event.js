@@ -102,6 +102,8 @@ export default function Event(props) {
         if (currentTime > eventStart) {
             const p = propositions.slice()
             p.forEach(proposition => {
+                const originalPick = Object.assign({}, proposition.originalPick);
+                proposition.pick = originalPick
                 proposition.isTooLate = true
             });
             setPropositions(p)
@@ -130,14 +132,14 @@ export default function Event(props) {
                 setPropositions(p)
                 invalid = true
             }
-            // need to test this
+
             if (proposition.pick.selection === '' && proposition.pick.units > 0) {
-                messages.push('Can\'t save.  Please make a pick for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')
+                messages.push('Can\'t save. Please make a pick for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')
                 invalid = true
             }
-            // need to test this
+
             if (proposition.pick.selection !== '' && proposition.pick.units === 0) {
-                messages.push('Can\'t save.  Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')
+                messages.push('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')
                 invalid = true
             }
         }
@@ -166,8 +168,9 @@ export default function Event(props) {
 
         // need to test this
         for (let proposition of p) {
-            if (proposition.isChanged) {
+            if (proposition.pick.isChanged) {
                 const pick = Object.assign({}, proposition.pick)
+                console.log("pick: " + pick)
                 pick.isChanged = false
                 proposition.originalPick = pick
             }
