@@ -28,9 +28,37 @@ describe('Event use cases (with all games selected and max units selected)', () 
         );
     })
 
+    test('Going over the unit limit should alert and prevent saving.', () => {
+        const propositions = MockPropositions(earliestLoadTime)
+
+        render(<Event
+            event={event}
+            propositions={propositions} />)
+                
+        //earliestSaveTime = new Date('September 1, 2020 10:10 AM')
+        jest
+            .spyOn(global.Date, 'now')
+            .mockImplementation(() => earliestSaveTime.valueOf()
+        )
+
+        const unitSelector = screen.queryAllByRole('combobox')[10]
+        const saveButton = screen.queryAllByRole('button', {name: /save/i})[1]
+        
+        userEvent.selectOptions(unitSelector, '30')
+        userEvent.click(saveButton)
+
+        expect(screen.getByText('Can\'t save. You are over 200 units.'))
+        userEvent.click(screen.getByRole('button', {name: /ok/i}))
+        expect(screen.queryByText('Can\'t save. You are over 200 units.')).not.toBeInTheDocument()
+        expect(unitSelector).toHaveValue('30')
+
+        userEvent.selectOptions(unitSelector, '4')
+        userEvent.click(saveButton)
+        expect(screen.queryByText('Can\'t save. You are over 200 units.')).not.toBeInTheDocument()
+    })
+
     test('Matchup partially selected and saved should alert and prevent matchup save.', () => {
         const propositions = MockPropositions(earliestLoadTime)
-        const proposition = propositions[10]
 
         render(<Event
             event={event}
@@ -55,6 +83,7 @@ describe('Event use cases (with all games selected and max units selected)', () 
         userEvent.click(washingtonRadio)
         const saveButton = screen.queryAllByRole('button', {name: /save/i})[1]
         userEvent.click(saveButton)
+        const proposition = propositions[10]
         expect(screen.getByText('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.'))
         userEvent.click(screen.getByRole('button', {name: /ok/i}))
         expect(screen.queryByText('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')).not.toBeInTheDocument()
@@ -149,13 +178,9 @@ describe('Event use cases (with all games selected and max units selected)', () 
             .mockImplementation(() => beforeEventStartTime.valueOf()
         );
 
-        expect(visRadioForLateGameShouldSave).not.toBeChecked()
-        expect(unitSelectorShouldSave).toHaveValue('5')
         userEvent.click(visRadioForLateGameShouldSave)
         userEvent.selectOptions(unitSelectorShouldSave, '4')
         userEvent.click(saveButton) // should save these ^ selections
-        expect(visRadioForLateGameShouldSave).toBeChecked()
-        expect(unitSelectorShouldSave).toHaveValue('4')
 
         userEvent.click(homeRadioForLateGameShouldntSave) 
         userEvent.selectOptions(unitSelectorShouldntSave, '4')
