@@ -11,10 +11,8 @@ export default function Event(props) {
     const [ modalContentLabel, setModalContentLabel ] = useState('') 
     const [ modalContentElement, setModalContentElement] = useState(<> </>)
 
-    const eventId = props.event.id
     const eventStart = props.event.start
     const maxUnits = props.event.maxUnits
-    // const [eventYear, eventWeek] = eventId.split('-')
 
     const requiredGames = propositions.filter( p => p.group.name === 'required')
     const optionalGames = propositions.filter( p => p.group.name === 'optional')
@@ -27,6 +25,21 @@ export default function Event(props) {
         })
     }    
     const totalUnits = sumTotalUnits()
+
+    const showModal = ( (contenLabel, messages) => {
+        setModalContentLabel(contenLabel)
+        setModalContentElement(
+            <div className="modal-content-container">
+            <div className="modal-content">
+            {messages.map( (message) => {
+                    return <p key={message}>{message}</p>
+                })}
+            <button onClick={() => handleCloseModal()}>Ok</button>
+            </div>
+            </div>
+        )
+        setShouldShowModal(true)        
+    })
 
     const handleCloseModal = () => {
         setShouldShowModal(false)
@@ -47,39 +60,23 @@ export default function Event(props) {
                 proposition.isTooLate = true
             });
             setPropositions(p)
-            setModalContentLabel('Event has already started.')
-            setModalContentElement(
-                <div className="modal-content-container">
-                <div className="modal-content">
-                <p>Event has already started.</p>
-                <button onClick={() => handleCloseModal()}>Ok</button>
-                </div>
-                </div>
-            )
-            setShouldShowModal(true)
+            showModal('Event has already started.', ['Event has already started.'])
             return        
         }
 
         if (currentTime > proposition.info.start) {
             proposition.isTooLate = true
             setPropositions(p)
-            setModalContentLabel('Can\'t change game.')
-            setModalContentElement(
-                <div className="modal-content-container">
-                <div className="modal-content">
-                <p>Game {index} has already started.</p>
-                <button onClick={() => handleCloseModal()}>Ok</button>
-                </div>
-                </div>
-            )
-            setShouldShowModal(true)
+            showModal('Can\'t change game.', ['Game ' + index + ' has already started.'])
             return
         }
 
-        if (name === 'units')
+        if (name === 'units') {
             proposition.pick.units = value
-        if (name === 'matchup')
+        }
+        if (name === 'matchup') {
             proposition.pick.selection = value
+        }
         if (name === 'clear') {
             if (proposition.group.name === 'required') {
                 proposition.pick.selection = proposition.matchup.vis
@@ -107,16 +104,7 @@ export default function Event(props) {
                 proposition.isTooLate = true
             });
             setPropositions(p)
-            setModalContentLabel('Event has already started.')
-            setModalContentElement(
-                <div className="modal-content-container">
-                <div className="modal-content">
-                <p>Event has already started.</p>
-                <button onClick={() => handleCloseModal()}>Ok</button>
-                </div>
-                </div>
-            )
-            setShouldShowModal(true)
+            showModal('Event has already started.', ['Event has already started.'])
             return        
         }
         
@@ -124,7 +112,7 @@ export default function Event(props) {
         let invalid = false
         const p = propositions.slice()
         for (let proposition of p) {
-            if (proposition.pick.isChanged && currentTime > proposition.info.start) {
+            if (proposition.pick.isChanged && (currentTime > proposition.info.start)) {
                 messages.push(proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game has already started.')
                 const originalPick = Object.assign({}, proposition.originalPick);
                 proposition.pick = originalPick
@@ -144,29 +132,16 @@ export default function Event(props) {
             }
         }
 
-        // need to test this
         if (totalUnits > maxUnits) {
-            messages.push('Can\'t save.  You are over 200 units.')
+            messages.push('Can\'t save. You are over 200 units.')
             invalid = true
         }
 
         if (invalid) {
-            setModalContentLabel('Error saving.')
-            setModalContentElement(
-                <div className="modal-content-container">
-                <div className="modal-content">
-                {messages.map( (message) => {
-                    return <p key={message}>{message}</p>
-                })}
-                <button onClick={() => handleCloseModal()}>Ok</button>
-                </div>
-                </div>
-            )
-            setShouldShowModal(true)
+            showModal('Can\'t save.', messages)
             return   
         }
 
-        // need to test this
         for (let proposition of p) {
             if (proposition.pick.isChanged) {
                 const pick = Object.assign({}, proposition.pick)

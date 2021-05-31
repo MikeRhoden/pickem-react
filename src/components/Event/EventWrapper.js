@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from 'react'
+import { React, useEffect, useState, useRef } from 'react'
 import Event from './Event'
 
 import { getMatchupsForEvent } from '../../services/matchup'
@@ -9,11 +9,11 @@ export default function EventWrapper(props) {
     const eventId = props.event.id
     const eventStart = props.event.start
     const [eventYear, eventWeek] = eventId.split('-')
-    const eventLoadTime = new Date('September 1, 2010 09:59:00') //todo: change this to new Date(Date.now())
+    const eventLoadTime = new Date(Date.now())
     const isTooLate = eventLoadTime > eventStart
+    let mounted = useRef(false);
 
     useEffect(() => {
-        let mounted = true
         getMatchupsForEvent(eventWeek, eventYear)
             .then(items => {
                 if(mounted) {
@@ -21,42 +21,46 @@ export default function EventWrapper(props) {
                     getUserPicksForEvent(eventWeek, eventYear, '00027')
                     .then(items => {
                         const picks = items;
-                        const p = matchups.map( x => {               
-                            const pick = picks.find( pick => pick.game === x.game )
-                            let selection = '', units = 0
-                            if (pick !== undefined) {
-                                selection = pick.pick
-                                units = pick.value
-                        }
+                        const p = matchups.map( x => {      
+                            let selection = '', units = 0 
+                            console.log(picks)
+                            console.log(picks.length)
+                            if (picks.length > 0) {        
+                                const pick = picks.find( pick => pick.game === x.game )
+                                if (pick !== undefined) {
+                                    selection = pick.pick
+                                    units = pick.value
+                                }
+                            }
                 
-                        const y = {
-                            'key': eventYear + '-' + eventWeek + '-' + x.game,
-                            'isTooLate': new Date(x.start) < eventLoadTime || isTooLate,
-                            'matchup': {
-                                'number': x.game,
-                                'home': x.home,
-                                'ho': x.ho,
-                                'visitor': x.visitor,
-                                'vis': x.vis,
-                                'favorite': x.favorite === 0 ? x.vis : x.ho,
-                                'spread': x.line
-                            },
-                            'info': {
-                                'start': new Date(x.start),
-                                'note': x.note,
-                                'pickEarly': new Date(x.start) < eventStart
-                            },
-                            'group': {
-                                'name': x.game < 11 ? 'required' : 'optional',
-                                'minUnitsAllowed': x.game < 11 ? 10 : 0,
-                                'maxUnitsAllowed': 30
-                            },
-                            'pick':  { 
-                                'selection': selection,
-                                'units': units
-                            }     
-                        }
-                        return y;
+                            const y = {
+                                'key': eventYear + '-' + eventWeek + '-' + x.game,
+                                'isTooLate': new Date(x.start) < eventLoadTime || isTooLate,
+                                'matchup': {
+                                    'number': x.game,
+                                    'home': x.home,
+                                    'ho': x.ho,
+                                    'visitor': x.visitor,
+                                    'vis': x.vis,
+                                    'favorite': x.favorite === 0 ? x.vis : x.ho,
+                                    'spread': x.line
+                                },
+                                'info': {
+                                    'start': new Date(x.start),
+                                    'note': x.note,
+                                    'pickEarly': new Date(x.start) < eventStart
+                                },
+                                'group': {
+                                    'name': x.game < 11 ? 'required' : 'optional',
+                                    'minUnitsAllowed': x.game < 11 ? 10 : 0,
+                                    'maxUnitsAllowed': 30
+                                },
+                                'pick':  { 
+                                    'selection': selection,
+                                    'units': units
+                                }     
+                            }
+                            return y;
                         })
                         setPropositions(p)
                     })

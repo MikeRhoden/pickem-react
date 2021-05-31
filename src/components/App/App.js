@@ -14,9 +14,9 @@ function App() {
   }
 
   const event = {
-    id: '2010-1',
-    start: new Date('September 4, 2010 10:00 AM'),
-    name: 'Pickem 2010: Week 1',
+    id: '2021-100',
+    start: new Date('6/5/2021 4:00:00 PM	'),
+    name: 'College Football Pickem 2021 Week 100	',
     maxUnits: 200
   }
 
