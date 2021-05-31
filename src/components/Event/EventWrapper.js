@@ -1,4 +1,4 @@
-import { React, useEffect, useState, useRef } from 'react'
+import { React, useEffect, useState } from 'react'
 import Event from './Event'
 
 import { getMatchupsForEvent } from '../../services/matchup'
@@ -11,9 +11,9 @@ export default function EventWrapper(props) {
     const [eventYear, eventWeek] = eventId.split('-')
     const eventLoadTime = new Date(Date.now())
     const isTooLate = eventLoadTime > eventStart
-    let mounted = useRef(false);
 
     useEffect(() => {
+        let mounted = true
         getMatchupsForEvent(eventWeek, eventYear)
             .then(items => {
                 if(mounted) {
