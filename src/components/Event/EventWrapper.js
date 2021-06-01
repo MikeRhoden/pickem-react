@@ -32,7 +32,15 @@ export default function EventWrapper(props) {
                                     units = pick.value
                                 }
                             }
-                
+                            const minUnitsAllowed = x.game < 11 ? 10 : 0
+                            const utcStart = new Date(x.start)
+                            const localStart = new Date( utcStart.getTime() - (utcStart.getTimezoneOffset() * 60000));
+                            const required = x.game < 11
+                            let isChanged = false
+                            if (selection === '' && required) {
+                                selection = x.vis
+                                isChanged = true
+                            }
                             const y = {
                                 'key': eventYear + '-' + eventWeek + '-' + x.game,
                                 'isTooLate': new Date(x.start) < eventLoadTime || isTooLate,
@@ -46,18 +54,19 @@ export default function EventWrapper(props) {
                                     'spread': x.line
                                 },
                                 'info': {
-                                    'start': new Date(x.start),
+                                    'start': localStart,
                                     'note': x.note,
                                     'pickEarly': new Date(x.start) < eventStart
                                 },
                                 'group': {
-                                    'name': x.game < 11 ? 'required' : 'optional',
-                                    'minUnitsAllowed': x.game < 11 ? 10 : 0,
+                                    'name': required ? 'required' : 'optional',
+                                    'minUnitsAllowed': minUnitsAllowed,
                                     'maxUnitsAllowed': 30
                                 },
                                 'pick':  { 
                                     'selection': selection,
-                                    'units': units
+                                    'units': units >= minUnitsAllowed ? units : minUnitsAllowed,
+                                    'isChanged': isChanged
                                 }     
                             }
                             return y;
@@ -70,7 +79,7 @@ export default function EventWrapper(props) {
         return () => { 
             mounted = false
         }
-    })
+    }, [])
 
     if (propositions.length === 0) {
         return (

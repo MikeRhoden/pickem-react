@@ -12,10 +12,11 @@ function App() {
   if (!userId) {
     return <Login setToken={setUserId} />
   }
-
+  const utcStart = new Date('6/5/2021 4:00:00 PM')
+  const localStart = new Date( utcStart.getTime() - (utcStart.getTimezoneOffset() * 60000));
   const event = {
     id: '2021-100',
-    start: new Date('6/5/2021 4:00:00 PM	'),
+    start: localStart,
     name: 'College Football Pickem 2021 Week 100	',
     maxUnits: 200
   }

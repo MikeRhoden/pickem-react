@@ -27,7 +27,7 @@ export default function Proposition(props) {
         const y = start.getFullYear()
         const h = start.getHours()
         const mi = start.getMinutes()
-        return 'pick by: ' + m + '/' + d + '/' + y + ' ' + h + ':' + (mi < 10 ? '0' + mi : mi)
+        return 'pick by: ' + start.toLocaleDateString() + ' ' + start.toLocaleTimeString() //+ m + '/' + d + '/' + y + ' ' + h + ':' + (mi < 10 ? '0' + mi : mi)
     }
 
     const pickUnitOptions = GetPickUnitOptions()

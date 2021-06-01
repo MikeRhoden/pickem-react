@@ -72,7 +72,7 @@ describe('Proposition use cases', () => {
         expect(screen.getByText('(-18.5)').parentElement.previousSibling).toHaveClass('proposition-home')
 
         expect(screen.getByText(/sunflower showdown/i)).toHaveClass('proposition-note')
-        expect(screen.getByText(/pick by: 9\/4\/2010 13:00/i)).toHaveClass('proposition-start')
+        expect(screen.getByText(/pick by: 9\/4\/2010 1:00:00 PM/i)).toHaveClass('proposition-start')
 
         expect(screen.getByRole('combobox')).toHaveValue('20')
         expect(screen.getByRole('combobox').childElementCount).toBe(21)

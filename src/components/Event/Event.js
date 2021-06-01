@@ -3,6 +3,9 @@ import ReactModal from 'react-modal'
 import Group from '../Group/Group'
 import './Event.css'
 
+import { savePick } from '../../services/picks'
+
+
 export default function Event(props) {
 
     const [ propositions, setPropositions ] = useState(props.propositions)
@@ -12,6 +15,9 @@ export default function Event(props) {
     const [ modalContentElement, setModalContentElement] = useState(<> </>)
 
     const eventStart = props.event.start
+    const eventId = props.event.id
+    const [eventYear, eventWeek] = eventId.split('-')
+
     const maxUnits = props.event.maxUnits
 
     const requiredGames = propositions.filter( p => p.group.name === 'required')
@@ -145,9 +151,16 @@ export default function Event(props) {
         for (let proposition of p) {
             if (proposition.pick.isChanged) {
                 const pick = Object.assign({}, proposition.pick)
-                console.log("pick: " + pick)
                 pick.isChanged = false
                 proposition.originalPick = pick
+                savePick({
+                    userId: '00027',
+                    week: parseInt(eventWeek),
+                    game: parseInt(proposition.matchup.number),
+                    pick: proposition.pick.selection,
+                    value: parseInt(proposition.pick.units),
+                    year: eventYear
+                })
             }
         }
         setPropositions(p)
