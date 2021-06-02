@@ -67,6 +67,11 @@ export default function EventWrapper(props) {
                                     'selection': selection,
                                     'units': units >= minUnitsAllowed ? units : minUnitsAllowed,
                                     'isChanged': isChanged
+                                },
+                                'originalPick':  { 
+                                    'selection': selection,
+                                    'units': units >= minUnitsAllowed ? units : minUnitsAllowed,
+                                    'isChanged': isChanged
                                 }     
                             }
                             return y;

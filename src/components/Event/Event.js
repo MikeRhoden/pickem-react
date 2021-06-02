@@ -150,8 +150,8 @@ export default function Event(props) {
 
         for (let proposition of p) {
             if (proposition.pick.isChanged) {
+                proposition.pick.isChanged = false
                 const pick = Object.assign({}, proposition.pick)
-                pick.isChanged = false
                 proposition.originalPick = pick
                 savePick({
                     userId: '00027',

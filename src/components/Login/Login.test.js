@@ -32,10 +32,10 @@ describe('Login Use Cases.', () => {
                 },
                 body: JSON.stringify(credentials),
             }),
-          )
-          expect(window.fetch).toHaveBeenCalledTimes(1)
-          await mockSaveUser()
-          expect(mockSaveUser).toHaveBeenCalledTimes(1)
+        )
+        expect(window.fetch).toHaveBeenCalledTimes(1)
+        await mockSaveUser()
+        expect(mockSaveUser).toHaveBeenCalledTimes(1)
     })
 
     test('Clicking submit with INVALID credentials should tell user "Sorry".', async () => {

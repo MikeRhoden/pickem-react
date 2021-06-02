@@ -28,6 +28,54 @@ describe('Event use cases (with all games selected and max units selected)', () 
         );
     })
 
+    test('Clicking save should call the fetch save picks', () => {
+        const propositions = MockPropositions(earliestLoadTime)
+
+        render(<Event
+            event={event}
+            propositions={propositions} />)
+                
+        //earliestSaveTime = new Date('September 1, 2020 10:10 AM')
+        jest
+            .spyOn(global.Date, 'now')
+            .mockImplementation(() => earliestSaveTime.valueOf()
+        )
+
+      
+        jest.spyOn(window, 'fetch')
+        window.fetch.mockResolvedValue({
+            ok: true,
+            json: async () => ({success: true}),
+        });
+        const unitSelector = screen.queryAllByRole('combobox')[10]
+        const saveButton = screen.queryAllByRole('button', {name: /save/i})[1]
+        
+        userEvent.selectOptions(unitSelector, '1')
+        userEvent.click(saveButton)
+
+        let qs = 'userID=00027'
+        qs += '&week=1'
+        qs += '&year=2010'
+        qs += '&game=11'
+        qs += '&pick=' + propositions[10].pick.selection
+        qs += '&value=1'
+        expect(window.fetch).toHaveBeenCalledWith('http://big12pickem.com/rpc/pick/put/pick.asp?' + qs)
+        expect(window.fetch).toHaveBeenCalledTimes(1)
+        
+        const unitSelector2 = screen.queryAllByRole('combobox')[11]
+        userEvent.selectOptions(unitSelector2, '1')
+        userEvent.click(saveButton)
+
+        qs = 'userID=00027'
+        qs += '&week=1'
+        qs += '&year=2010'
+        qs += '&game=12'
+        qs += '&pick=' + propositions[11].pick.selection
+        qs += '&value=1'
+        expect(window.fetch).toHaveBeenCalledWith('http://big12pickem.com/rpc/pick/put/pick.asp?' + qs)
+        expect(window.fetch).toHaveBeenCalledTimes(2)
+    })
+
     test('Going over the unit limit should alert and prevent saving.', () => {
         const propositions = MockPropositions(earliestLoadTime)
 
@@ -52,6 +100,11 @@ describe('Event use cases (with all games selected and max units selected)', () 
         expect(screen.queryByText('Can\'t save. You are over 200 units.')).not.toBeInTheDocument()
         expect(unitSelector).toHaveValue('30')
 
+        jest.spyOn(window, 'fetch')
+        window.fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({success: true}),
+        });
         userEvent.selectOptions(unitSelector, '4')
         userEvent.click(saveButton)
         expect(screen.queryByText('Can\'t save. You are over 200 units.')).not.toBeInTheDocument()
@@ -180,6 +233,11 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
         userEvent.click(visRadioForLateGameShouldSave)
         userEvent.selectOptions(unitSelectorShouldSave, '4')
+        jest.spyOn(window, 'fetch')
+        window.fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({success: true}),
+        });        
         userEvent.click(saveButton) // should save these ^ selections
 
         userEvent.click(homeRadioForLateGameShouldntSave) 
