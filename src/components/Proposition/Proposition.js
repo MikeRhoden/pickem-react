@@ -22,11 +22,6 @@ export default function Proposition(props) {
     const isTooLate = props.isTooLate
 
     const formatPickEarlyStart = (start) => {
-        const m = start.getMonth() + 1
-        const d = start.getDate()
-        const y = start.getFullYear()
-        const h = start.getHours()
-        const mi = start.getMinutes()
         return 'pick by: ' + start.toLocaleDateString() + ' ' + start.toLocaleTimeString() //+ m + '/' + d + '/' + y + ' ' + h + ':' + (mi < 10 ? '0' + mi : mi)
     }
 

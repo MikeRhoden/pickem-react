@@ -23,7 +23,6 @@ export async function savePick(pick) {
   qs += '&game=' + pick.game
   qs += '&pick=' + pick.pick 
   qs += '&value=' + pick.value
-  console.log(qs)
   return fetch('http://big12pickem.com/rpc/pick/put/pick.asp?' + qs)
   .then(handleErrors)
   .then(data => data.json())

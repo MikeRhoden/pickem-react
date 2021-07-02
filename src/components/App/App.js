@@ -5,21 +5,17 @@ import './App.css';
 import EventWrapper from '../Event/EventWrapper'
 import Login from '../Login/Login';
 import useUser from './useUser';
+import { useState } from 'react';
+import FetchActiveEventWrapper from './FetchActiveEventWrapper'
+
 
 function App() {
   const { userId, setUserId } = useUser();
-  
+  const [ event, setEvent ] = useState({id: ''});
   if (!userId) {
     return <Login setToken={setUserId} />
   }
-  const utcStart = new Date('6/5/2021 4:00:00 PM')
-  const localStart = new Date( utcStart.getTime() - (utcStart.getTimezoneOffset() * 60000));
-  const event = {
-    id: '2021-100',
-    start: localStart,
-    name: 'College Football Pickem 2021 Week 100	',
-    maxUnits: 200
-  }
+  const isEventActive = (event.id !== '')
 
   return (
     <BrowserRouter>
@@ -34,7 +30,8 @@ function App() {
                 {event.name}
               </div>
             </div>
-            <EventWrapper event={event} />
+            {isEventActive && <EventWrapper event={event} userId={userId} />}
+            {<FetchActiveEventWrapper setEvent={setEvent} />}
           </div>
         </Route>
       </Switch>

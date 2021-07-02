@@ -7,9 +7,10 @@ import { getUserPicksForEvent } from '../../services/picks'
 export default function EventWrapper(props) {
     const [ propositions, setPropositions ] = useState([])
     const eventId = props.event.id
-    const eventStart = props.event.start
     const [eventYear, eventWeek] = eventId.split('-')
+    const eventStart = props.event.start
     const eventLoadTime = new Date(Date.now())
+    const userId = props.userId
     const isTooLate = eventLoadTime > eventStart
 
     useEffect(() => {
@@ -18,13 +19,11 @@ export default function EventWrapper(props) {
             .then(items => {
                 if(mounted) {
                     const matchups = items
-                    getUserPicksForEvent(eventWeek, eventYear, '00027')
+                    getUserPicksForEvent(eventWeek, eventYear, userId)
                     .then(items => {
                         const picks = items;
                         const p = matchups.map( x => {      
                             let selection = '', units = 0 
-                            console.log(picks)
-                            console.log(picks.length)
                             if (picks.length > 0) {        
                                 const pick = picks.find( pick => pick.game === x.game )
                                 if (pick !== undefined) {
