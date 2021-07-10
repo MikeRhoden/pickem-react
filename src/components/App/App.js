@@ -1,13 +1,13 @@
 import { BrowserRouter, Route, Switch} from 'react-router-dom';
 
-import './App.css';
+import './App.css'
 
 import EventWrapper from '../Event/EventWrapper'
-import Login from '../Login/Login';
-import useUser from './useUser';
-import { useState } from 'react';
+import Login from '../Login/Login'
+import useUser from './useUser'
+import { useState } from 'react'
 import FetchActiveEventWrapper from './FetchActiveEventWrapper'
-
+import Menu1 from './Menu'
 
 function App() {
   const { userId, setUserId } = useUser();
@@ -18,24 +18,27 @@ function App() {
   const isEventActive = (event.id !== '')
 
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/testv1/event">
-          <div className="App">
-            <div className='header'>
-              <div className='site-name'>
-                big12pickem.com
+    <div>
+      <Menu1 />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/testv1/event">
+            <div className="App">
+              <div className='header'>
+                <div className='site-name'>
+                  big12pickem.com
+                </div>
+                <div className='event-name'>
+                  {event.name}
+                </div>
               </div>
-              <div className='event-name'>
-                {event.name}
-              </div>
+              {isEventActive && <EventWrapper event={event} userId={userId} />}
+              {<FetchActiveEventWrapper setEvent={setEvent} />}
             </div>
-            {isEventActive && <EventWrapper event={event} userId={userId} />}
-            {<FetchActiveEventWrapper setEvent={setEvent} />}
-          </div>
-        </Route>
-      </Switch>
-    </BrowserRouter>
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </div>
   );
 }
 
