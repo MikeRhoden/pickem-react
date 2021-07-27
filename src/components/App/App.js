@@ -8,18 +8,26 @@ import useUser from './useUser'
 import { useState } from 'react'
 import FetchActiveEventWrapper from './FetchActiveEventWrapper'
 import Menu1 from './Menu'
+import Dashboard from '../Dashboard/Dashboard'
 
 function App() {
-  const { userId, setUserId } = useUser();
+  const { userId, setUserId, clearUserId, activePage, setActivePage } = useUser();
   const [ event, setEvent ] = useState({id: ''});
+  let page = ''
+
   if (!userId) {
     return <Login setToken={setUserId} />
   }
   const isEventActive = (event.id !== '')
 
+  if (window.location.href.indexOf('dashboard') > -1)
+    page = 'dashboard'
+  else if (window.location.href.indexOf('event') > -1)
+    page = 'event'
+
   return (
     <div>
-      <Menu1 />
+      <Menu1 signOut={clearUserId} activePage={page} />
       <BrowserRouter>
         <Switch>
           <Route path="/testv1/event">
@@ -35,6 +43,9 @@ function App() {
               {isEventActive && <EventWrapper event={event} userId={userId} />}
               {<FetchActiveEventWrapper setEvent={setEvent} />}
             </div>
+          </Route>
+          <Route path="/testv1/dashboard">
+            <Dashboard setActivePage={setActivePage} />
           </Route>
         </Switch>
       </BrowserRouter>

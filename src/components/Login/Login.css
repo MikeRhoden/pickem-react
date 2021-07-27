@@ -59,3 +59,7 @@
       outline-width: thin;
     }
   }
+
+  .login-wrapper input {
+    border: 1px;
+  }

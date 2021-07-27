@@ -142,7 +142,6 @@ export default function Login({setToken}) {
         return (
             <div className="login-wrapper">
                 <h3>big12pickem.com</h3>
-                <h4>Sign Up!</h4>
                 <form onSubmit={handleSignUpSubmit}>
                 <label>
                         <p>Username</p>
@@ -180,11 +179,11 @@ export default function Login({setToken}) {
                             type="password" />
                     </label>
                     <p>
-                        <button type="submit">Submit</button>
+                        <button type="submit">Sign Up</button>
                         <button
                             className="toggleLogin"
                             onClick={handleLoginClick}
-                            style={{display: 'inline', marginLeft: '1em'}}>back to log in</button>
+                            style={{display: 'inline', marginLeft: '1em'}}>back to sign in</button>
                     </p>
                 </form>
                 <div className="login-error" style={errorStyle}>
@@ -195,8 +194,7 @@ export default function Login({setToken}) {
     } else if (mode === 'login') {
         return (
             <div className="login-wrapper">
-                <h3>big12pickem.com</h3>
-                <h4>Sign In</h4>
+                <p>big12pickem.com</p>
                 <form onSubmit={handleLoginSubmit}>
                     <label>
                         <p>Username</p>
@@ -213,7 +211,7 @@ export default function Login({setToken}) {
                             type="password" />
                     </label>
                     <p>
-                        <button type="submit" name="submit">Submit</button>
+                        <button type="submit" name="submit">Sign In</button>
                         <button
                             className="toggleLogin"
                             onClick={handleSignUpClick}
