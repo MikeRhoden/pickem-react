@@ -41,11 +41,7 @@ export default function EventWrapper(props) {
                                 isChanged = true
                             }
 
-                            const gameStartTime = new Date(x.start)
                             const currentTime = new Date(Date.now())
-                            console.log('game#: ' + x.game)
-                            console.log('localStart: ' + localStart)
-                            console.log('currentTime: ' + currentTime)
 
                             const y = {
                                 'key': eventYear + '-' + eventWeek + '-' + x.game,
