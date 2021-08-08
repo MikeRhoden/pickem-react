@@ -14,6 +14,7 @@ export default function Event(props) {
     const [ modalContentLabel, setModalContentLabel ] = useState('') 
     const [ modalContentElement, setModalContentElement] = useState(<> </>)
 
+    const userId = props.userId
     const eventStart = props.event.start
     const eventId = props.event.id
     const [eventYear, eventWeek] = eventId.split('-')
@@ -22,6 +23,9 @@ export default function Event(props) {
 
     const requiredGames = propositions.filter( p => p.group.name === 'required')
     const optionalGames = propositions.filter( p => p.group.name === 'optional')
+
+    const deadLine = setDeadLine(eventStart, eventYear, eventWeek)
+    
     const sumTotalUnits = () => {
         const units = propositions.map( (p) => {
             return Number(p.pick.units)
@@ -154,7 +158,7 @@ export default function Event(props) {
                 const pick = Object.assign({}, proposition.pick)
                 proposition.originalPick = pick
                 savePick({
-                    userId: '00027',
+                    userId: userId,
                     week: parseInt(eventWeek),
                     game: parseInt(proposition.matchup.number),
                     pick: proposition.pick.selection,
@@ -169,6 +173,7 @@ export default function Event(props) {
 
     return (
         <div className="event">
+            {deadLine}
             <div className="group1">
                 <Group
                     isSaved={isSaved}
@@ -197,4 +202,25 @@ export default function Event(props) {
             </ReactModal>
         </div>
     )
+}
+
+function setDeadLine(eventStart, eventYear, eventWeek) {
+    const gridLink = (
+        <a href={'http://big12pickem.com/results_grid_' + eventYear + '.asp?w=' + eventWeek}
+            target="_blank">View Grid</a>
+    )
+    const currentTime = new Date(Date.now())
+    const tooLate = currentTime > eventStart
+    const user = sessionStorage.getItem('user')
+    const userString = JSON.parse(user)
+    const firstName = userString?.FirstName
+    console.log(user);
+    const deadLinePassed = (
+        <div className="deadline">Hi {firstName}! The pick deadline has passed: {gridLink}</div>
+    )
+    const deadLineNotPassed = (
+        <div className="deadline">Hi {firstName}! Make picks by Saturday 11:00 AM CST</div>
+    )
+    const deadLine = tooLate ? deadLinePassed : deadLineNotPassed
+    return deadLine
 }

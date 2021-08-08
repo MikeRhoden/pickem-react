@@ -47,8 +47,7 @@ export default function Proposition(props) {
                             value={vis}
                             checked={props.pick.selection === vis}
                             onChange={props.onChange}
-                            disabled={isTooLate ? 'disabled' : ''} />
-                        {visitor}</label>
+                            disabled={isTooLate ? 'disabled' : ''} /> {visitor}</label>
                 </div>
                 <div className="spread">
                     <span>{visitorSpread}</span>
@@ -62,8 +61,7 @@ export default function Proposition(props) {
                             value={ho}
                             checked={props.pick.selection === ho}
                             onChange={props.onChange}
-                            disabled={isTooLate ? 'disabled' : ''} />
-                        {home}</label>
+                            disabled={isTooLate ? 'disabled' : ''} /> {home}</label>
                 </div>
                 <div className="spread">
                     <span>{homeSpread}</span>

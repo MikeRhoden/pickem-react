@@ -40,9 +40,16 @@ export default function EventWrapper(props) {
                                 selection = x.vis
                                 isChanged = true
                             }
+
+                            const gameStartTime = new Date(x.start)
+                            const currentTime = new Date(Date.now())
+                            console.log('game#: ' + x.game)
+                            console.log('localStart: ' + localStart)
+                            console.log('currentTime: ' + currentTime)
+
                             const y = {
                                 'key': eventYear + '-' + eventWeek + '-' + x.game,
-                                'isTooLate': new Date(x.start) < eventLoadTime || isTooLate,
+                                'isTooLate': localStart < currentTime || isTooLate,
                                 'matchup': {
                                     'number': x.game,
                                     'home': x.home,
@@ -93,6 +100,7 @@ export default function EventWrapper(props) {
 
     return (
         <Event
+            userId={userId}
             event={props.event}
             propositions={propositions} />
     )
