@@ -6,7 +6,6 @@ import { useLocation } from 'react-router-dom'
 
 function HeaderView(setActivePage) {
   const location = useLocation();
-  console.log(location.pathname);
   if (location.pathname.indexOf('dashboard')) {
       setActivePage('dashboard')
   }
@@ -40,7 +39,6 @@ export default function Dashboard(props) {
             {showYears[year] && <Leaderboard year={ year } />}
         </div>)
     })
-    console.log(leaderBoards)
     return (
         <div className="dashboard">
             {leaderBoards}

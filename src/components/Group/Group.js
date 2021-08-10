@@ -16,6 +16,9 @@ export default function Group(props) {
     return (
         <div className="group">
             <div className="group-header">
+                <div className="event-units" style={ hasExceededMaxUnits ? {color: 'indianred'} : {color: 'lightgreen'}} >
+                    {totalUnits}/{maxUnits}
+                </div>                
                 <div className="group-name">
                     {props.groupName}
                 </div>
@@ -26,9 +29,7 @@ export default function Group(props) {
                         className="save-event"
                         style={{backgroundColor: saveBGColor}}
                         onClick={props.onSave}>{isSaved ? 'Saved': 'Save'}</button>
-                    <div className="event-units" style={ hasExceededMaxUnits ? {color: 'indianred'} : {color: 'lightgreen'}} >
-                        {totalUnits}/{maxUnits}
-                    </div>
+
                 </div>
             </div>
             <div className="group-area1">

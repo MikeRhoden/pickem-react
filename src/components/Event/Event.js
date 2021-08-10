@@ -214,7 +214,6 @@ function setDeadLine(eventStart, eventYear, eventWeek) {
     const user = sessionStorage.getItem('user')
     const userString = JSON.parse(user)
     const firstName = userString?.FirstName
-    console.log(user);
     const deadLinePassed = (
         <div className="deadline">Hi {firstName}! The pick deadline has passed: {gridLink}</div>
     )
