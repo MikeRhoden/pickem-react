@@ -35,6 +35,20 @@ export default function Proposition(props) {
             onClick={props.onChange}>clear</button>
     ) : (<div> </div>)
 
+    console.log('note: ' + note)
+    console.log('pickEarly: ' + pickEarly)
+
+    let propositionInfo = note || pickEarly ? (
+        <div className="proposition-info">
+            <div className="proposition-note" style={isTooLate ? {color: 'white'} : {}}>
+                {note}
+            </div>
+            <div className="proposition-start" style={isTooLate ? {color: 'white'} : {}}>
+                {pickEarly ? formatPickEarlyStart(start) : ''}
+            </div>
+        </div>
+    ) : null
+
     return (
         <div className={'proposition' + (isTooLate ? ' tooLate' : '')}>
             <div className="proposition-pick">
@@ -66,14 +80,6 @@ export default function Proposition(props) {
                 <div className="spread">
                     <span>{homeSpread}</span>
                 </div>
-                <div className="proposition-info">
-                    <div className="proposition-note" style={isTooLate ? {color: 'white'} : {}}>
-                        {note}
-                    </div>
-                    <div className="proposition-start" style={isTooLate ? {color: 'white'} : {}}>
-                        {pickEarly ? formatPickEarlyStart(start) : ''}
-                    </div>
-                </div>
             </div>
             <div className="proposition-weight">
                 <div>
@@ -89,6 +95,7 @@ export default function Proposition(props) {
                     {clearButton}
                 </div>
             </div>
+            {propositionInfo}
         </div>
     )
 

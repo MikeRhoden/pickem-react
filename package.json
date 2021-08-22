@@ -1,6 +1,6 @@
 {
-  "name": "pickem-component-test",
-  "version": "0.1.0",
+  "name": "pickem",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.1.2",
@@ -40,7 +40,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "http://big12pickem.com/testV1",
+  "homepage": "http://big12pickem.com/v2",
   "devDependencies": {
     "autoprefixer": "^9.8.6",
     "postcss": "^7.0.36",
