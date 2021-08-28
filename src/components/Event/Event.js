@@ -207,7 +207,7 @@ export default function Event(props) {
 function setDeadLine(eventStart, eventYear, eventWeek) {
     const gridLink = (
         <a href={'http://big12pickem.com/results_grid_' + eventYear + '.asp?w=' + eventWeek}
-            target="_blank">View Grid</a>
+            target="_blank" rel="noreferrer">View Grid</a>
     )
     const currentTime = new Date(Date.now())
     const tooLate = currentTime > eventStart

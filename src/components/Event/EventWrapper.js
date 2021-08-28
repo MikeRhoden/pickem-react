@@ -86,7 +86,7 @@ export default function EventWrapper(props) {
         return () => { 
             mounted = false
         }
-    }, [])
+    }, [eventStart, eventWeek, eventYear, isTooLate, userId])
 
     if (propositions.length === 0) {
         return (

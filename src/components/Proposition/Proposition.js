@@ -35,9 +35,6 @@ export default function Proposition(props) {
             onClick={props.onChange}>clear</button>
     ) : (<div> </div>)
 
-    console.log('note: ' + note)
-    console.log('pickEarly: ' + pickEarly)
-
     let propositionInfo = note || pickEarly ? (
         <div className="proposition-info">
             <div className="proposition-note" style={isTooLate ? {color: 'white'} : {}}>

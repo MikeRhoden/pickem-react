@@ -2,15 +2,6 @@ import { React, useState } from 'react'
 import './Dashboard.css'
 import DashboardData2019 from './data/DashboardData2019'
 import DashboardData2018 from './data/DashboardData2018'
-import { useLocation } from 'react-router-dom'
-
-function HeaderView(setActivePage) {
-  const location = useLocation();
-  if (location.pathname.indexOf('dashboard')) {
-      setActivePage('dashboard')
-  }
-  //return <span>Path : {location.pathname}</span>
-}
 
 function initShowYears(years) {
     const showYears = {}

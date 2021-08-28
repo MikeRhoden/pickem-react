@@ -11,7 +11,7 @@ import Menu1 from './Menu'
 import Dashboard from '../Dashboard/Dashboard'
 
 function App() {
-  const { userId, setUserId, clearUserId, activePage, setActivePage } = useUser();
+  const { userId, setUserId, clearUserId } = useUser();
   const [ event, setEvent ] = useState({id: ''});
   let page = ''
 
@@ -45,7 +45,7 @@ function App() {
             </div>
           </Route>
           <Route path="/v2/dashboard">
-            <Dashboard setActivePage={setActivePage} />
+            <Dashboard />
           </Route>
         </Switch>
       </BrowserRouter>
