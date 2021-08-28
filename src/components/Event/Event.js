@@ -214,12 +214,19 @@ function setDeadLine(eventStart, eventYear, eventWeek) {
     const user = sessionStorage.getItem('user')
     const userString = JSON.parse(user)
     const firstName = userString?.FirstName
-    const deadLinePassed = (
-        <div className="deadline">Hi {firstName}! The pick deadline has passed: {gridLink}</div>
+    if (tooLate) {
+        return (
+            <div className="deadline">Hi {firstName}! The pick deadline has passed: {gridLink}</div>
+        )
+    }
+    const dateEventStart = new Date(eventStart)
+    const deadlineDayTime = getDayOfWeekEn(dateEventStart) + ' ' + dateEventStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return (
+        <div className="deadline">Hi {firstName}! Make picks by {deadlineDayTime}</div>
     )
-    const deadLineNotPassed = (
-        <div className="deadline">Hi {firstName}! Make picks by Saturday 11:00 AM CST</div>
-    )
-    const deadLine = tooLate ? deadLinePassed : deadLineNotPassed
-    return deadLine
+
+    function getDayOfWeekEn(date) {
+        const options = { weekday: 'long'};
+        return new Intl.DateTimeFormat('en-US', options).format(date)
+    }
 }
