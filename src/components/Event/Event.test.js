@@ -33,7 +33,8 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
         render(<Event
             event={event}
-            propositions={propositions} />)
+            propositions={propositions}
+            userId={'00027'} />)
                 
         //earliestSaveTime = new Date('September 1, 2020 10:10 AM')
         jest
@@ -81,7 +82,8 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
         render(<Event
             event={event}
-            propositions={propositions} />)
+            propositions={propositions}
+            userId={'00027'} />)
                 
         //earliestSaveTime = new Date('September 1, 2020 10:10 AM')
         jest
@@ -115,7 +117,8 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
         render(<Event
             event={event}
-            propositions={propositions} />)
+            propositions={propositions}
+            userId={'00027'} />)
                 
         //earliestSaveTime = new Date('September 1, 2020 10:10 AM')
         jest
@@ -159,7 +162,8 @@ describe('Event use cases (with all games selected and max units selected)', () 
         const propositions = MockPropositions(earliestLoadTime)
         render(<Event
             event={event}
-            propositions={propositions} />)
+            propositions={propositions}
+            userId={'00027'} />)
 
         const homeRadioForLateGame = screen.getByRole('radio', { name: /washington/i })
         expect(homeRadioForLateGame).not.toBeChecked()
@@ -199,7 +203,8 @@ describe('Event use cases (with all games selected and max units selected)', () 
         const propositions = MockPropositions(pastEventStartTime, isToolateForEvent)
         render(<Event
             event={event}
-            propositions={propositions} />)
+            propositions={propositions}
+            userId={'00027'} />)
 
         const someRadioButton = screen.getByRole('radio', { name: /washington/i })
         const allPropositionElements = someRadioButton.closest('.event').querySelectorAll('.proposition')
@@ -212,7 +217,8 @@ describe('Event use cases (with all games selected and max units selected)', () 
         const propositions = MockPropositions(beforeEventStartTime)
         render(<Event
             event={event}   
-            propositions={propositions} />)
+            propositions={propositions}
+            userId={'00027'} />)
 
         const allUnitSelectors = screen.queryAllByRole('combobox')
         const visRadioForLateGameShouldntSave = screen.getByRole('radio', { name: 'Iowa' })
@@ -270,7 +276,8 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
         render(<Event
             event={event}
-            propositions={propositions} />)
+            propositions={propositions}
+            userId={'00027'} />)
 
         const homeRadioForLateGame = screen.getByRole('radio', { name: /duke/i })
         const enabledPropositionElement = homeRadioForLateGame.closest('.proposition')
@@ -296,11 +303,11 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
     test('Event loaded after matchup start and before event start should disable matchup change or selection.', () => {
         const propositions = MockPropositions(pastEarlyStartTime)
-        const dummyCurrentTime = () => { return new Date(Date.now()) }
+        
         render(<Event
             event={event}
             propositions={propositions}
-            getCurrentTime={() => dummyCurrentTime()} />)
+            userId={'00027'} />)
 
         const propositionElement = screen.getByRole('radio', { name: /washington/i }).closest('.proposition')
         expectPropositionToBeDisabled(propositionElement)        
@@ -310,7 +317,8 @@ describe('Event use cases (with all games selected and max units selected)', () 
         const propositions = MockPropositions(earliestLoadTime)
         render(<Event
             event={event}
-            propositions={propositions} />)
+            propositions={propositions}
+            userId={'00027'} />)
 
         const hoRadio = screen.getByRole('radio', {name: /washington/i})
         const enabledPropositionElement = screen.getByRole('radio', { name: /washington/i }).closest('.proposition')
@@ -335,7 +343,8 @@ describe('Event use cases (with all games selected and max units selected)', () 
         const propositions = MockPropositions(earliestLoadTime)
         render(<Event
             event={event}
-            propositions={propositions} />)
+            propositions={propositions}
+            userId={'00027'} />)
 
         const allRadioButtons = screen.queryAllByRole('radio')
         expect(allRadioButtons.length).toBe(40)

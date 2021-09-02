@@ -22,7 +22,7 @@ describe('Login Use Cases.', () => {
         });
         userEvent.type(screen.getByPlaceholderText('User Name / Email'), 'username')
         userEvent.type(screen.getByPlaceholderText('password'), 'password')
-        userEvent.click(screen.getByRole('button', {name: /submit/i}))
+        userEvent.click(screen.getByRole('button', {name: /sign in/i}))
         expect(window.fetch).toHaveBeenCalledWith(
             'http://big12pickem.com/rpc/user/get/user.asp',
             expect.objectContaining({
@@ -52,7 +52,7 @@ describe('Login Use Cases.', () => {
         });
         userEvent.type(screen.getByPlaceholderText('User Name / Email'), 'username')
         userEvent.type(screen.getByPlaceholderText('password'), 'password')
-        userEvent.click(screen.getByRole('button', {name: /submit/i}))
+        userEvent.click(screen.getByRole('button', {name: /sign in/i}))
         expect(window.fetch).toHaveBeenCalledWith(
             'http://big12pickem.com/rpc/user/get/user.asp',
             expect.objectContaining({
@@ -69,7 +69,7 @@ describe('Login Use Cases.', () => {
 
     test('Not filling out user name of password should tell user either field is blank.', () => {
         render(<Login setToken={mockSaveUser} />)
-        userEvent.click(screen.getByRole('button', {name: /submit/i}))
+        userEvent.click(screen.getByRole('button', {name: /sign in/i}))
         expect(screen.getByText(/user name is blank/i)).toBeInTheDocument()
         expect(screen.getByText(/password is blank/i)).toBeInTheDocument()
     })
@@ -102,7 +102,7 @@ describe('Sign Up Use Cases.', () => {
         userEvent.type(screen.getByPlaceholderText('Last name'), 'lastname')
         userEvent.type(screen.getByPlaceholderText('password'), 'password')
         userEvent.type(screen.getByPlaceholderText('confirm password'), 'password')
-        userEvent.click(screen.getByRole('button', {name: /submit/i}))
+        userEvent.click(screen.getByRole('button', {name: /sign up/i}))
         
         expect(window.fetch).toHaveBeenCalledWith(
             'http://big12pickem.com/rpc/user/post/user.asp',
@@ -134,7 +134,7 @@ describe('Sign Up Use Cases.', () => {
         userEvent.type(screen.getByPlaceholderText('Last name'), 'lastname')
         userEvent.type(screen.getByPlaceholderText('password'), 'password')
         userEvent.type(screen.getByPlaceholderText('confirm password'), 'password')
-        userEvent.click(screen.getByRole('button', {name: /submit/i}))
+        userEvent.click(screen.getByRole('button', {name: /sign up/i}))
 
         expect(window.fetch).toHaveBeenCalledWith(
             'http://big12pickem.com/rpc/user/post/user.asp',
@@ -154,7 +154,7 @@ describe('Sign Up Use Cases.', () => {
         render(<Login setToken={mockSaveUser} />)
 
         userEvent.click(screen.getByText(/sign up/i))
-        userEvent.click(screen.getByRole('button', {name: /submit/i}))
+        userEvent.click(screen.getByRole('button', {name: /sign up/i}))
 
         expect(screen.getByText(/user name is blank/i)).toBeInTheDocument()
         expect(screen.getByText(/first name is blank/i)).toBeInTheDocument()
@@ -169,10 +169,10 @@ describe('Sign Up Use Cases.', () => {
         userEvent.click(screen.getByText(/sign up/i))
         userEvent.type(screen.getByPlaceholderText(/user name \/ email/i), 'usern')
         userEvent.type(screen.getByPlaceholderText('password'), 'passw')
-        userEvent.click(screen.getByRole('button', {name: /submit/i}))
+        userEvent.click(screen.getByRole('button', {name: /sign up/i}))
 
-        expect(screen.getByText(/user name must be at least 6 characters/i))
-        expect(screen.getByText(/password must be at least 6 characters/i))
+        expect(screen.getByText(/user name must be at least 6 characters/i)).toBeInTheDocument();
+        expect(screen.getByText(/password must be at least 6 characters/i)).toBeInTheDocument();
     })
 
     test('A password that does not match the password confirmation should let the user know', () => {
@@ -184,7 +184,7 @@ describe('Sign Up Use Cases.', () => {
         userEvent.type(screen.getByPlaceholderText('Last name'), 'lastname')
         userEvent.type(screen.getByPlaceholderText('password'), 'password')
         userEvent.type(screen.getByPlaceholderText('confirm password'), 'Xpassword')
-        userEvent.click(screen.getByRole('button', {name: /submit/i}))
+        userEvent.click(screen.getByRole('button', {name: /sign up/i}))
 
         expect(screen.getByText(/does not match/i)).toBeInTheDocument()
     })
@@ -198,14 +198,14 @@ describe('Toggling between log in and sign up', () => {
 
         userEvent.click(screen.getByText(/sign up/i))
 
-        expect(screen.getByText(/log in/i)).toBeInTheDocument()
+        expect(screen.getByText(/sign in/i)).toBeInTheDocument()
     })
 
     test('Toggle from "Log In" to "Sign Up" to "Log In" should show "Log In" screen.', () => {
         render(<Login setToken={mockSaveUser} />)
 
         userEvent.click(screen.getByText(/sign up/i))
-        userEvent.click(screen.getByText(/log in/i))
+        userEvent.click(screen.getByText(/sign in/i))
 
         expect(screen.getByText(/sign up/i)).toBeInTheDocument()
     })
