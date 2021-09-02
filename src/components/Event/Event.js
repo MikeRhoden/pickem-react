@@ -5,15 +5,67 @@ import './Event.css'
 
 import { savePick } from '../../services/picks'
 
-function reducer(state, action) {
+function propositionsReducer(propositions, action) {
+    // action types: deadlinePassed, tooLate, units, selection, isChanged, resetAllPicks, resetPick, backupPick
+    // action index tells which proposition has changed
+    // action value tells us the new value of the proposition property
     console.log(action);
+    console.log(propositions);
+    const p = propositions.slice()
+    let proposition
+    let index
+    let value
+    if (action.index !== undefined)
+    {
+        index = action.index
+        console.log(index)
+        proposition = p[index]
+        console.log(proposition)
+        value = action.value
+        console.log(value)
+    }
+    switch(action.type) {
+        case 'deadlinePassed':
+            p.forEach( proposition => proposition.isTooLate = true)
+            return p
+        case 'tooLate':
+            proposition.isTooLate = true
+            return p
+        case 'units':
+            proposition.pick.units = value
+            return p
+        case 'selection':
+            proposition.pick.selection = value
+            return p
+        case 'isChanged':
+            proposition.pick.isChanged = value
+            return p
+        case 'resetAllPicks':
+            p.forEach(proposition => {
+                const originalPick = Object.assign({}, proposition.originalPick);
+                proposition.pick = originalPick
+                proposition.isTooLate = true
+            });
+            return p
+        case 'resetPick':
+            const originalPick = Object.assign({}, proposition.originalPick);
+            proposition.pick = originalPick
+            return p
+        case 'backupPick':
+            proposition.pick.isChanged = false
+            const pick = Object.assign({}, proposition.pick)
+            proposition.originalPick = pick
+            return p
+        default:
+            throw new Error('Unknown action type.')            
+    }
 }
 
 export default function Event(props) {
 
     // const [ propositions, setPropositions ] = useState(props.propositions)
     const [ isSaved, setIsSaved ] = useState(true)
-    const [ propositions, dispatch ] = useReducer(reducer, props.propositions)
+    const [ propositions, dispatch ] = useReducer(propositionsReducer, props.propositions)
     const [ shouldShowModal, setShouldShowModal ] = useState(false)
     const [ modalContentLabel, setModalContentLabel ] = useState('') 
     const [ modalContentElement, setModalContentElement] = useState(<> </>)
@@ -61,7 +113,7 @@ export default function Event(props) {
 
     const handleChange = e => {
         const name = e.target.name.split('-')[0]
-        const index = Number(e.target.name.split('-')[1])
+        const index = Number(e.target.name.split('-')[1]) - 1;
         const value = e.target.value
 
         const p = propositions.slice()
@@ -74,31 +126,31 @@ export default function Event(props) {
             return        
         }
 
-        const proposition = p[index - 1]
+        const proposition = p[index]
         if (currentTime > proposition.info.start) {
-            dispatch({ type: 'tooLate', index: index - 1})
+            dispatch({ type: 'tooLate', index: index})
             showModal('Can\'t change game.', ['Game ' + index + ' has already started.'])
             return
         }
 
         if (name === 'units') {
-            dispatch({ type: 'units', index: index - 1, value: value})
+            dispatch({ type: 'units', index: index, value: value})
         }
 
         if (name === 'matchup') {
-            dispatch({ type: 'selection', index: index - 1, value: value})
+            dispatch({ type: 'selection', index: index, value: value})
         }
         if (name === 'clear') {
             if (proposition.group.name === 'required') {
-                dispatch({ type: 'selection', index: index - 1, value: proposition.matchup.vis})
-                dispatch({ type: 'units', index: index - 1, value: value})
+                dispatch({ type: 'selection', index: index, value: proposition.matchup.vis})
+                dispatch({ type: 'units', index: index, value: value})
             }
             if (proposition.group.name === 'optional') {
-                dispatch({ type: 'selection', index: index - 1, value: ''})
-                dispatch({ type: 'units', index: index - 1, value: 0})
+                dispatch({ type: 'selection', index: index, value: ''})
+                dispatch({ type: 'units', index: index, value: 0})
             }
         }
-        dispatch({ type: 'isChanged', index: index - 1, value: true})
+        dispatch({ type: 'isChanged', index: index, value: true})
         setIsSaved(false)
     }
 
@@ -107,8 +159,7 @@ export default function Event(props) {
         //const currentTime = new Date('September 1, 2010 10:00 AM')
         const currentTime = new Date(Date.now())
         if (currentTime > eventStart) {
-            dispatch({ action: 'resetAllPicks' })
-            dispatch({ type: 'deadlinePassed' })
+            dispatch({ type: 'resetAllPicks' })
             showModal('Event has already started.', ['Event has already started.'])
             return        
         }
@@ -120,7 +171,7 @@ export default function Event(props) {
         for (let proposition of p) {
             if (proposition.pick.isChanged && (currentTime > proposition.info.start)) {
                 messages.push(proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game has already started.')
-                dispatch({ action: 'resetPick', index: index})
+                dispatch({ type: 'resetPick', index: index})
                 dispatch({ type: 'tooLate', index: index})
                 invalid = true
             }
@@ -150,7 +201,7 @@ export default function Event(props) {
         index = 0;
         for (let proposition of p) {
             if (proposition.pick.isChanged) {
-                dispatch({ action: 'backupPick', index: index})
+                dispatch({ type: 'backupPick', index: index})
                 savePick({
                     userId: userId,
                     week: parseInt(eventWeek),
