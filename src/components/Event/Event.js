@@ -1,15 +1,19 @@
-import { useState, React } from 'react'
+import { useState, React, useReducer } from 'react'
 import ReactModal from 'react-modal'
 import Group from '../Group/Group'
 import './Event.css'
 
 import { savePick } from '../../services/picks'
 
+function reducer(state, action) {
+    console.log(action);
+}
 
 export default function Event(props) {
 
-    const [ propositions, setPropositions ] = useState(props.propositions)
+    // const [ propositions, setPropositions ] = useState(props.propositions)
     const [ isSaved, setIsSaved ] = useState(true)
+    const [ propositions, dispatch ] = useReducer(reducer, props.propositions)
     const [ shouldShowModal, setShouldShowModal ] = useState(false)
     const [ modalContentLabel, setModalContentLabel ] = useState('') 
     const [ modalContentElement, setModalContentElement] = useState(<> </>)
@@ -61,45 +65,41 @@ export default function Event(props) {
         const value = e.target.value
 
         const p = propositions.slice()
-        const proposition = p[index - 1]
         //event start new Date('September 4, 2010 10:00 AM')
         // const currentTime = new Date('September 1, 2010 10:00 AM')
         const currentTime = new Date(Date.now())
         if (currentTime > eventStart) {
-            p.forEach(proposition => {
-                proposition.isTooLate = true
-            });
-            setPropositions(p)
+            dispatch({ type: 'deadlinePassed' })
             showModal('Event has already started.', ['Event has already started.'])
             return        
         }
 
+        const proposition = p[index - 1]
         if (currentTime > proposition.info.start) {
-            proposition.isTooLate = true
-            setPropositions(p)
+            dispatch({ type: 'tooLate', index: index - 1})
             showModal('Can\'t change game.', ['Game ' + index + ' has already started.'])
             return
         }
 
         if (name === 'units') {
-            proposition.pick.units = value
+            dispatch({ type: 'units', index: index - 1, value: value})
         }
+
         if (name === 'matchup') {
-            proposition.pick.selection = value
+            dispatch({ type: 'selection', index: index - 1, value: value})
         }
         if (name === 'clear') {
             if (proposition.group.name === 'required') {
-                proposition.pick.selection = proposition.matchup.vis
-                proposition.pick.units = value
+                dispatch({ type: 'selection', index: index - 1, value: proposition.matchup.vis})
+                dispatch({ type: 'units', index: index - 1, value: value})
             }
             if (proposition.group.name === 'optional') {
-                proposition.pick.selection = ''
-                proposition.pick.units = 0
+                dispatch({ type: 'selection', index: index - 1, value: ''})
+                dispatch({ type: 'units', index: index - 1, value: 0})
             }
         }
-        proposition.pick.isChanged = true
+        dispatch({ type: 'isChanged', index: index - 1, value: true})
         setIsSaved(false)
-        setPropositions(p)
     }
 
     const handleSave = () => {
@@ -107,13 +107,8 @@ export default function Event(props) {
         //const currentTime = new Date('September 1, 2010 10:00 AM')
         const currentTime = new Date(Date.now())
         if (currentTime > eventStart) {
-            const p = propositions.slice()
-            p.forEach(proposition => {
-                const originalPick = Object.assign({}, proposition.originalPick);
-                proposition.pick = originalPick
-                proposition.isTooLate = true
-            });
-            setPropositions(p)
+            dispatch({ action: 'resetAllPicks' })
+            dispatch({ type: 'deadlinePassed' })
             showModal('Event has already started.', ['Event has already started.'])
             return        
         }
@@ -121,13 +116,12 @@ export default function Event(props) {
         let messages = [];
         let invalid = false
         const p = propositions.slice()
+        let index = 0;
         for (let proposition of p) {
             if (proposition.pick.isChanged && (currentTime > proposition.info.start)) {
                 messages.push(proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game has already started.')
-                const originalPick = Object.assign({}, proposition.originalPick);
-                proposition.pick = originalPick
-                proposition.isTooLate = true
-                setPropositions(p)
+                dispatch({ action: 'resetPick', index: index})
+                dispatch({ type: 'tooLate', index: index})
                 invalid = true
             }
 
@@ -140,6 +134,7 @@ export default function Event(props) {
                 messages.push('Can\'t save. Please select units for the ' + proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game.')
                 invalid = true
             }
+            index++;
         }
 
         if (totalUnits > maxUnits) {
@@ -152,11 +147,10 @@ export default function Event(props) {
             return   
         }
 
+        index = 0;
         for (let proposition of p) {
             if (proposition.pick.isChanged) {
-                proposition.pick.isChanged = false
-                const pick = Object.assign({}, proposition.pick)
-                proposition.originalPick = pick
+                dispatch({ action: 'backupPick', index: index})
                 savePick({
                     userId: userId,
                     week: parseInt(eventWeek),
@@ -166,8 +160,8 @@ export default function Event(props) {
                     year: eventYear
                 })
             }
+            index++;
         }
-        setPropositions(p)
         setIsSaved(true)
     }
 
