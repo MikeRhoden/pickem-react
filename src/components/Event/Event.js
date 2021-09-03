@@ -9,8 +9,6 @@ function propositionsReducer(propositions, action) {
     // action types: deadlinePassed, tooLate, units, selection, isChanged, resetAllPicks, resetPick, backupPick
     // action index tells which proposition has changed
     // action value tells us the new value of the proposition property
-    console.log(action);
-    console.log(propositions);
     const p = propositions.slice()
     let proposition
     let index
@@ -18,11 +16,8 @@ function propositionsReducer(propositions, action) {
     if (action.index !== undefined)
     {
         index = action.index
-        console.log(index)
         proposition = p[index]
-        console.log(proposition)
         value = action.value
-        console.log(value)
     }
     switch(action.type) {
         case 'deadlinePassed':
@@ -129,7 +124,7 @@ export default function Event(props) {
         const proposition = p[index]
         if (currentTime > proposition.info.start) {
             dispatch({ type: 'tooLate', index: index})
-            showModal('Can\'t change game.', ['Game ' + index + ' has already started.'])
+            showModal('Can\'t change game.', ['Game ' + (index + 1) + ' has already started.'])
             return
         }
 

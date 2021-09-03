@@ -330,7 +330,7 @@ describe('Event use cases (with all games selected and max units selected)', () 
             .mockImplementationOnce(() => pastEarlierStartTime.valueOf()
         );
         userEvent.click(hoRadio)
-
+        console.log(propositions[10])
         expect(screen.getByText('Game 11 has already started.')).toBeInTheDocument()
         userEvent.click(screen.getByRole('button', {name: /ok/i}))
         expect(screen.queryByText('Game 11 has already started.')).not.toBeInTheDocument()
