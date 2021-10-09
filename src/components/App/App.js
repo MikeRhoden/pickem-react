@@ -30,7 +30,7 @@ function App() {
       <Menu1 signOut={clearUserId} activePage={page} />
       <BrowserRouter>
         <Switch>
-          <Route path="/v2/event">
+          <Route path="/event">
             <div className="App">
               <div className='header'>
                 <div className='site-name'>
@@ -44,7 +44,7 @@ function App() {
               {<FetchActiveEventWrapper setEvent={setEvent} />}
             </div>
           </Route>
-          <Route path="/v2/dashboard">
+          <Route path="/dashboard">
             <Dashboard />
           </Route>
         </Switch>
