@@ -40,7 +40,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "http://big12pickem.com/v2",
+  "homepage": ".",
   "devDependencies": {
     "autoprefixer": "^9.8.6",
     "postcss": "^7.0.36",
