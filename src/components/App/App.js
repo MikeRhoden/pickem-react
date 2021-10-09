@@ -28,7 +28,7 @@ function App() {
   return (
     <div>
       <Menu1 signOut={clearUserId} activePage={page} />
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.REACT_APP_ROUTER_BASENAME}>
         <Switch>
           <Route path="/event">
             <div className="App">
