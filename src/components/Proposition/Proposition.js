@@ -44,7 +44,7 @@ export default function Proposition(props) {
                 {pickEarly ? formatPickEarlyStart(start) : ''}
             </div>
         </div>
-    ) : null
+    ) : <></>
 
     return (
         <div className={'proposition' + (isTooLate ? ' tooLate' : '')}>
