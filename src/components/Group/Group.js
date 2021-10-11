@@ -1,6 +1,6 @@
 import React from 'react'
-import GroupArea from './GroupArea'
 import './Group.css'
+import Proposition from '../Proposition/Proposition'
 
 export default function Group(props) {
   const isSaved = props.isSaved
@@ -33,16 +33,34 @@ export default function Group(props) {
         </div>
       </div>
       <div className="group-area1">
-        <GroupArea
-          propositions={group1}
-          onClear={props.onClear}
-          onChange={props.onChange} />
+        <div className="group-area">
+          {group1.map( (proposition) => {
+            return <Proposition
+              key={proposition.key}
+              matchup={proposition.matchup}
+              pick={proposition.pick}
+              info={proposition.info}
+              group={proposition.group}
+              isTooLate={proposition.isTooLate}
+              onClear={props.onClear}
+              onChange={props.onChange} />
+            })}
+        </div>
       </div>
       <div className="group-area2">
-        <GroupArea
-          propositions={group2}
-          onClear={props.onClear}
-          onChange={props.onChange} />
+      <div className="group-area">
+          {group2.map( (proposition) => {
+            return <Proposition
+              key={proposition.key}
+              matchup={proposition.matchup}
+              pick={proposition.pick}
+              info={proposition.info}
+              group={proposition.group}
+              isTooLate={proposition.isTooLate}
+              onClear={props.onClear}
+              onChange={props.onChange} />
+            })}
+        </div>
       </div>
     </div>
   )
