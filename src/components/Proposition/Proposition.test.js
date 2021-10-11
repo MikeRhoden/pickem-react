@@ -30,6 +30,7 @@ describe('Proposition use cases', () => {
     }
 
     const mockOnChange = jest.fn()
+    const mockOnClear = jest.fn()
 
     beforeEach(() => {
         currentTime = new Date('September 3, 2010 10:00:00')
@@ -58,6 +59,7 @@ describe('Proposition use cases', () => {
                     info={info}
                     group={group}
                     isTooLate={false}
+                    onClear={mockOnClear}
                     onChange={mockOnChange} />)
 
         expect(screen.getByLabelText('Kansas')).toBeInTheDocument()
@@ -122,6 +124,7 @@ describe('Proposition use cases', () => {
             info={info}
             group={group}
             isTooLate={true}
+            onClear={mockOnClear}
             onChange={mockOnChange} />)
         
         expect(screen.getByLabelText('Kansas')).toBeDisabled()
@@ -138,6 +141,7 @@ describe('Proposition use cases', () => {
             info={info}
             group={group}
             isTooLate={false}
+            onClear={mockOnClear}
             onChange={mockOnChange} />)
 
         const radioKu = screen.getByLabelText('Kansas')
@@ -146,10 +150,10 @@ describe('Proposition use cases', () => {
 
         const buttonClear = screen.getByRole(/button/i)
         userEvent.click(buttonClear)
-        expect(mockOnChange).toBeCalledTimes(2)
+        expect(mockOnClear).toBeCalledTimes(1)
 
         const selectUnits = screen.getByRole('combobox')
         userEvent.selectOptions(selectUnits, '15')
-        expect(mockOnChange).toBeCalledTimes(3)
+        expect(mockOnChange).toBeCalledTimes(2)
     })
 })

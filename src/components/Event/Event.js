@@ -260,8 +260,9 @@ export default function Event(props) {
           propositions={requiredGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
+          onClear={e => handleClear(e)}
           onChange={e => handleChange(e)}
-          onSave={() => handleSave()} />
+          onSave={() => handleSave()}/>
       </div>
       <div className="group2">
         <Group
@@ -270,6 +271,7 @@ export default function Event(props) {
           propositions={optionalGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
+          onClear={e => handleClear(e)}
           onChange={e => handleChange(e)}
           onSave={() => handleSave()} />
       </div>

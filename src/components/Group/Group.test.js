@@ -1,4 +1,4 @@
-import { render, screen, container, act } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import MockPropositions from '../Event/MockPropositions'
 import Group from './Group'
@@ -8,6 +8,7 @@ describe('Group use cases.', () => {
     const requiredGames = propositions.filter( p => p.group.name === 'required')
     let maxUnits = 200
     let totalUnits = 200
+    const mockOnClear = jest.fn()
     const mockOnChange = jest.fn()
     const mockOnSave = jest.fn()
 
@@ -38,6 +39,7 @@ describe('Group use cases.', () => {
             propositions={requiredGames}
             maxUnits={maxUnits}
             totalUnits={totalUnits}
+            onClear={ e => mockOnClear(e) }
             onChange={ e => mockOnChange(e) }
             onSave={ () => mockOnSave() } />)
 
@@ -47,11 +49,11 @@ describe('Group use cases.', () => {
 
         const buttonClear = screen.queryAllByRole(/button/i, {name: /clear/i})[0]
         userEvent.click(buttonClear)
-        expect(mockOnChange).toBeCalledTimes(2)
+        expect(mockOnClear).toBeCalledTimes(1)
 
         const selectUnits = screen.queryAllByRole('combobox')[0]
         userEvent.selectOptions(selectUnits, '15')
-        expect(mockOnChange).toBeCalledTimes(3)
+        expect(mockOnChange).toBeCalledTimes(2)
     })
 
     test('Max units exceeded should render event units as red.', () => {

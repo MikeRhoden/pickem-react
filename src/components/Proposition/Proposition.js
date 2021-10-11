@@ -32,7 +32,7 @@ export default function Proposition(props) {
             className="reset"
             value={props.group.minUnitsAllowed}
             name={'clear-' + number}
-            onClick={props.onChange}>clear</button>
+            onClick={props.onClear}>clear</button>
     ) : (<div> </div>)
 
     let propositionInfo = note || pickEarly ? (

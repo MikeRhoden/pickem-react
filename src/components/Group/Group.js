@@ -35,11 +35,13 @@ export default function Group(props) {
             <div className="group-area1">
                 <GroupArea
                     propositions={group1}
+                    onClear={props.onClear}
                     onChange={props.onChange} />
             </div>
             <div className="group-area2">
                 <GroupArea
                     propositions={group2}
+                    onClear={props.onClear}
                     onChange={props.onChange} />
             </div>
         </div>
