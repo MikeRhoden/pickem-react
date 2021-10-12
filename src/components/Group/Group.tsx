@@ -1,8 +1,21 @@
-import React from 'react'
+import React, { MouseEventHandler } from 'react'
 import './Group.css'
 import Proposition from '../Proposition/Proposition'
+import { ChangeEventHandler } from 'react'
+import { IProposition } from './IProposition'
 
-export default function Group(props) {
+interface IGroupProps {
+  isSaved: boolean;
+  propositions: IProposition[];
+  totalUnits: number;
+  maxUnits: number;
+  groupName: string;
+  onSave: MouseEventHandler;
+  onClear: MouseEventHandler
+  onChange: ChangeEventHandler
+}
+
+export default function Group(props: IGroupProps) {
   const isSaved = props.isSaved
   const saveBGColor = isSaved ? '#CCCCCC' : '#0099CC'
   const propositions = props.propositions
@@ -34,7 +47,7 @@ export default function Group(props) {
       </div>
       <div className="group-area1">
         <div className="group-area">
-          {group1.map( (proposition) => {
+          {group1.map((proposition) => {
             return <Proposition
               key={proposition.key}
               matchup={proposition.matchup}
@@ -44,12 +57,12 @@ export default function Group(props) {
               isTooLate={proposition.isTooLate}
               onClear={props.onClear}
               onChange={props.onChange} />
-            })}
+          })}
         </div>
       </div>
       <div className="group-area2">
-      <div className="group-area">
-          {group2.map( (proposition) => {
+        <div className="group-area">
+          {group2.map((proposition) => {
             return <Proposition
               key={proposition.key}
               matchup={proposition.matchup}
@@ -59,7 +72,7 @@ export default function Group(props) {
               isTooLate={proposition.isTooLate}
               onClear={props.onClear}
               onChange={props.onChange} />
-            })}
+          })}
         </div>
       </div>
     </div>
