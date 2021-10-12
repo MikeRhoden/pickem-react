@@ -10,4 +10,5 @@ export interface IProposition {
   info: IInfo;
   group: IGroup;
   isTooLate: boolean;
+  originalPick: IPick;
 }

@@ -1,23 +1,29 @@
-import { useState, React, useReducer } from 'react'
+import React, { useState, useReducer } from 'react'
 import ReactModal from 'react-modal'
 import Group from '../Group/Group'
 import './Event.css'
-
 import { savePick } from '../../services/picks'
+import { IProposition } from '../../models/IProposition'
 
-function propositionsReducer(propositions, action) {
+interface IAction {
+  index: number;
+  value: any;
+  type: string;
+}
+
+function propositionsReducer(propositions: IProposition[], action: IAction) {
   // action types: deadlinePassed, tooLate, units, selection, isChanged, resetAllPicks, resetPick, backupPick
   // action index tells which proposition has changed
   // action value tells us the new value of the proposition property
   const p = propositions.slice()
-  let proposition
-  let index
-  let value
-  if (action.index !== undefined) {
-    index = action.index
-    proposition = p[index]
-    value = action.value
-  }
+  let proposition: IProposition
+  let index: number;
+  let value: any;
+
+  index = action.index
+  proposition = p[index]
+  value = action.value
+
   switch (action.type) {
     case 'deadlinePassed':
       p.forEach(proposition => proposition.isTooLate = true)
@@ -55,7 +61,19 @@ function propositionsReducer(propositions, action) {
   }
 }
 
-export default function Event(props) {
+interface IEvent {
+  start: Date;
+  id: string;
+  maxUnits: number;
+}
+
+interface IEventProps {
+  userId: string;
+  event: IEvent;
+  propositions: IProposition[];
+}
+
+export default function Event(props: IEventProps) {
 
   // const [ propositions, setPropositions ] = useState(props.propositions)
   const [isSaved, setIsSaved] = useState(true)
@@ -86,7 +104,7 @@ export default function Event(props) {
   }
   const totalUnits = sumTotalUnits()
 
-  const showModal = ((contenLabel, messages) => {
+  const showModal = ((contenLabel: string, messages: string[]) => {
     setModalContentLabel(contenLabel)
     setModalContentElement(
       <div className="modal-content-container">
@@ -105,9 +123,9 @@ export default function Event(props) {
     setShouldShowModal(false)
   }
 
-  const targetProperties = t => {
+  const targetProperties = (t: HTMLInputElement) => {
     const name = t.name.split('-')[0]
-    const index = Number(t.name.split('-')[1]) - 1;
+    const index = Number(t.name.split('-')[1]) - 1
     const value = t.value
     return {
       name,
@@ -116,21 +134,22 @@ export default function Event(props) {
     }
   }
 
+  const handleClear = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const target: HTMLButtonElement = event.currentTarget
+    const index = Number(target.name.split('-')[1]) - 1;
+    const value = target.value
 
-  const handleClear = e => {
     const currentTime = new Date(Date.now())
     if (currentTime > eventStart) {
-      dispatch({ type: 'deadlinePassed' })
+      dispatch({ type: 'deadlinePassed', index: undefined, value: undefined })
       showModal('Event has already started.', ['Event has already started.'])
       return
     }
 
-    const index = Number(e.target.name.split('-')[1]) - 1;
-    const value = e.target.value
     const p = propositions.slice()
     const proposition = p[index]
     if (currentTime > proposition.info.start) {
-      dispatch({ type: 'tooLate', index: index })
+      dispatch({ type: 'tooLate', index: index, value: undefined })
       showModal('Can\'t change game.', ['Game ' + (index + 1) + ' has already started.'])
       return
     }
@@ -147,22 +166,22 @@ export default function Event(props) {
     setIsSaved(false)
   }
 
-  const handleChange = e => {
-    const { name, index, value } = targetProperties(e.target)
+  const handleChange = (e: React.ChangeEvent<HTMLElement>) => {
+    const { name, index, value } = targetProperties(e.target as HTMLInputElement)
 
     const p = propositions.slice()
     // event start new Date('September 4, 2010 10:00 AM')
     // const currentTime = new Date('September 1, 2010 10:00 AM')
     const currentTime = new Date(Date.now())
     if (currentTime > eventStart) {
-      dispatch({ type: 'deadlinePassed' })
+      dispatch({ type: 'deadlinePassed', index: undefined, value: undefined })
       showModal('Event has already started.', ['Event has already started.'])
       return
     }
 
     const proposition = p[index]
     if (currentTime > proposition.info.start) {
-      dispatch({ type: 'tooLate', index: index })
+      dispatch({ type: 'tooLate', index: index, value: undefined })
       showModal('Can\'t change game.', ['Game ' + (index + 1) + ' has already started.'])
       return
     }
@@ -174,16 +193,7 @@ export default function Event(props) {
     if (name === 'matchup') {
       dispatch({ type: 'selection', index: index, value: value })
     }
-    if (name === 'clear') {
-      if (proposition.group.name === 'required') {
-        dispatch({ type: 'selection', index: index, value: proposition.matchup.vis })
-        dispatch({ type: 'units', index: index, value: value })
-      }
-      if (proposition.group.name === 'optional') {
-        dispatch({ type: 'selection', index: index, value: '' })
-        dispatch({ type: 'units', index: index, value: 0 })
-      }
-    }
+
     dispatch({ type: 'isChanged', index: index, value: true })
     setIsSaved(false)
   }
@@ -191,9 +201,9 @@ export default function Event(props) {
   const handleSave = () => {
     //event start new Date('September 4, 2010 10:00 AM')
     //const currentTime = new Date('September 1, 2010 10:00 AM')
-    const currentTime = new Date(Date.now())
+    const currentTime: Date = new Date(Date.now())
     if (currentTime > eventStart) {
-      dispatch({ type: 'resetAllPicks' })
+      dispatch({ type: 'resetAllPicks', index: undefined, value: undefined })
       showModal('Event has already started.', ['Event has already started.'])
       return
     }
@@ -205,8 +215,8 @@ export default function Event(props) {
     for (let proposition of p) {
       if (proposition.pick.isChanged && (currentTime > proposition.info.start)) {
         messages.push(proposition.matchup.visitor + ' vs ' + proposition.matchup.home + ' game has already started.')
-        dispatch({ type: 'resetPick', index: index })
-        dispatch({ type: 'tooLate', index: index })
+        dispatch({ type: 'resetPick', index: index, value: undefined })
+        dispatch({ type: 'tooLate', index: index, value: undefined })
         invalid = true
       }
 
@@ -235,13 +245,13 @@ export default function Event(props) {
     index = 0;
     for (let proposition of p) {
       if (proposition.pick.isChanged) {
-        dispatch({ type: 'backupPick', index: index })
+        dispatch({ type: 'backupPick', index: index, value: undefined })
         savePick({
           userId: userId,
           week: parseInt(eventWeek),
-          game: parseInt(proposition.matchup.number),
+          game: proposition.matchup.number,
           pick: proposition.pick.selection,
-          value: parseInt(proposition.pick.units),
+          value: proposition.pick.units,
           year: eventYear
         })
       }
@@ -260,9 +270,9 @@ export default function Event(props) {
           propositions={requiredGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
-          onClear={e => handleClear(e)}
-          onChange={e => handleChange(e)}
-          onSave={() => handleSave()}/>
+          onClear={(e: React.MouseEvent<HTMLButtonElement>) => handleClear(e)}
+          onChange={(e: React.ChangeEvent<HTMLElement>) => handleChange(e)}
+          onSave={() => handleSave()} />
       </div>
       <div className="group2">
         <Group
@@ -271,8 +281,8 @@ export default function Event(props) {
           propositions={optionalGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
-          onClear={e => handleClear(e)}
-          onChange={e => handleChange(e)}
+          onClear={(e: React.MouseEvent<HTMLButtonElement>) => handleClear(e)}
+          onChange={(e: React.ChangeEvent<HTMLElement>) => handleChange(e)}
           onSave={() => handleSave()} />
       </div>
       <ReactModal
@@ -285,7 +295,7 @@ export default function Event(props) {
   )
 }
 
-function setDeadLine(eventStart, eventYear, eventWeek) {
+function setDeadLine(eventStart: Date, eventYear: string, eventWeek: string) {
   const gridLink = (
     <a href={'http://big12pickem.com/results_grid_' + eventYear + '.asp?w=' + eventWeek}
       target="_blank" rel="noreferrer">View Grid</a>
@@ -306,8 +316,8 @@ function setDeadLine(eventStart, eventYear, eventWeek) {
     <div className="deadline">Hi {firstName}! Make picks by {deadlineDayTime}</div>
   )
 
-  function getDayOfWeekEn(date) {
-    const options = { weekday: 'long' };
+  function getDayOfWeekEn(date: Date) {
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
     return new Intl.DateTimeFormat('en-US', options).format(date)
   }
 }
