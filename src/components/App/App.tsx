@@ -9,10 +9,11 @@ import { useState } from 'react'
 import FetchActiveEventWrapper from './FetchActiveEventWrapper'
 import Menu1 from './Menu'
 import Dashboard from '../Dashboard/Dashboard'
+import { IEvent } from '../../models/IEvent';
 
 function App() {
   const { userId, setUserId, clearUserId } = useUser();
-  const [event, setEvent] = useState({ id: '' });
+  const [event, setEvent] = useState<IEvent>({ id: '', maxUnits: 0, start: new Date(), name: '' });
   let page = ''
 
   if (!userId) {
