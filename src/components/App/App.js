@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Switch} from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import './App.css'
 
@@ -12,7 +12,7 @@ import Dashboard from '../Dashboard/Dashboard'
 
 function App() {
   const { userId, setUserId, clearUserId } = useUser();
-  const [ event, setEvent ] = useState({id: ''});
+  const [event, setEvent] = useState({ id: '' });
   let page = ''
 
   if (!userId) {
