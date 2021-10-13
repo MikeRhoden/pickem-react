@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, MouseEvent, ChangeEvent } from 'react'
 import ReactModal from 'react-modal'
 import Group from '../Group/Group'
 import './Event.css'
@@ -74,8 +74,6 @@ interface IEventProps {
 }
 
 export default function Event(props: IEventProps) {
-
-  // const [ propositions, setPropositions ] = useState(props.propositions)
   const [isSaved, setIsSaved] = useState(true)
   const [propositions, dispatch] = useReducer(propositionsReducer, props.propositions)
   const [shouldShowModal, setShouldShowModal] = useState(false)
@@ -123,7 +121,7 @@ export default function Event(props: IEventProps) {
     setShouldShowModal(false)
   }
 
-  const targetProperties = (t: HTMLInputElement) => {
+  const getPropositionProperties = (t: HTMLInputElement) => {
     const name = t.name.split('-')[0]
     const index = Number(t.name.split('-')[1]) - 1
     const value = t.value
@@ -134,55 +132,78 @@ export default function Event(props: IEventProps) {
     }
   }
 
-  const handleClear = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const hasEventStarted = (): boolean => {
+    const currentTime = new Date(Date.now())
+    return currentTime > eventStart;
+  }
+
+  const dispatchEventHasStarted = (): void => {
+    dispatch({ type: 'deadlinePassed', index: undefined, value: undefined })
+  }
+
+  const showModalForEventHasStarted = (): void => {
+    showModal('Event has already started.', ['Event has already started.'])
+  }
+
+  const hasGameStarted = (start: Date): boolean => {
+    const currentTime = new Date(Date.now())
+    return currentTime > start
+  }
+
+  const dispatchGameHasStarted = (index: number): void => {
+    dispatch({ type: 'tooLate', index: index, value: undefined })
+  }
+
+  const showModalForGameHasStarted = (index: number): void => {
+    showModal('Can\'t change game.', ['Game ' + (index + 1) + ' has already started.'])
+  }
+
+  const handleClear = (event: MouseEvent<HTMLButtonElement>) => {
     const target: HTMLButtonElement = event.currentTarget
     const index = Number(target.name.split('-')[1]) - 1;
-    const value = target.value
 
-    const currentTime = new Date(Date.now())
-    if (currentTime > eventStart) {
-      dispatch({ type: 'deadlinePassed', index: undefined, value: undefined })
-      showModal('Event has already started.', ['Event has already started.'])
+    if (hasEventStarted()) {
+      dispatchEventHasStarted()
+      showModalForEventHasStarted()
       return
     }
 
     const p = propositions.slice()
     const proposition = p[index]
-    if (currentTime > proposition.info.start) {
-      dispatch({ type: 'tooLate', index: index, value: undefined })
-      showModal('Can\'t change game.', ['Game ' + (index + 1) + ' has already started.'])
+    if (hasGameStarted(proposition.info.start)) {
+      dispatchGameHasStarted(index)
+      showModalForGameHasStarted(index)
       return
     }
 
     if (proposition.group.name === 'required') {
       dispatch({ type: 'selection', index: index, value: proposition.matchup.vis })
-      dispatch({ type: 'units', index: index, value: value })
+      dispatch({ type: 'units', index: index, value: proposition.group.minUnitsAllowed })
     }
     if (proposition.group.name === 'optional') {
       dispatch({ type: 'selection', index: index, value: '' })
-      dispatch({ type: 'units', index: index, value: 0 })
+      dispatch({ type: 'units', index: index, value: proposition.group.minUnitsAllowed })
     }
     dispatch({ type: 'isChanged', index: index, value: true })
     setIsSaved(false)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLElement>) => {
-    const { name, index, value } = targetProperties(e.target as HTMLInputElement)
+    const { name, index, value } = getPropositionProperties(e.target as HTMLInputElement)
 
-    const p = propositions.slice()
     // event start new Date('September 4, 2010 10:00 AM')
     // const currentTime = new Date('September 1, 2010 10:00 AM')
-    const currentTime = new Date(Date.now())
-    if (currentTime > eventStart) {
-      dispatch({ type: 'deadlinePassed', index: undefined, value: undefined })
-      showModal('Event has already started.', ['Event has already started.'])
+    if (hasEventStarted()) {
+      dispatchEventHasStarted()
+      showModalForEventHasStarted()
       return
     }
 
+    const p = propositions.slice()
     const proposition = p[index]
-    if (currentTime > proposition.info.start) {
-      dispatch({ type: 'tooLate', index: index, value: undefined })
-      showModal('Can\'t change game.', ['Game ' + (index + 1) + ' has already started.'])
+    if (hasGameStarted(proposition.info.start)) {
+      dispatchGameHasStarted(index);
+      showModalForGameHasStarted(index);
       return
     }
 
@@ -270,8 +291,8 @@ export default function Event(props: IEventProps) {
           propositions={requiredGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
-          onClear={(e: React.MouseEvent<HTMLButtonElement>) => handleClear(e)}
-          onChange={(e: React.ChangeEvent<HTMLElement>) => handleChange(e)}
+          onClear={(e: MouseEvent<HTMLButtonElement>) => handleClear(e)}
+          onChange={(e: ChangeEvent<HTMLElement>) => handleChange(e)}
           onSave={() => handleSave()} />
       </div>
       <div className="group2">
@@ -281,8 +302,8 @@ export default function Event(props: IEventProps) {
           propositions={optionalGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
-          onClear={(e: React.MouseEvent<HTMLButtonElement>) => handleClear(e)}
-          onChange={(e: React.ChangeEvent<HTMLElement>) => handleChange(e)}
+          onClear={(e: MouseEvent<HTMLButtonElement>) => handleClear(e)}
+          onChange={(e: ChangeEvent<HTMLElement>) => handleChange(e)}
           onSave={() => handleSave()} />
       </div>
       <ReactModal

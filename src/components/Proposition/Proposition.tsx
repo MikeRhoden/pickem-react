@@ -15,10 +15,7 @@ interface IPropositionProps {
   onChange: ChangeEventHandler;
 }
 
-export default function Proposition2(props: IPropositionProps) {
-  // game odds : spread : moneyline : total
-  // to win
-
+export default function Proposition(props: IPropositionProps) {
   const visitor = props.matchup.visitor
   const vis = props.matchup.vis
   const home = props.matchup.home
@@ -44,7 +41,6 @@ export default function Proposition2(props: IPropositionProps) {
   const clearButton = !isTooLate ? (
     <button
       className="reset"
-      value={props.group.minUnitsAllowed}
       name={'clear-' + number}
       onClick={props.onClear}>clear</button>
   ) : (<div> </div>)
