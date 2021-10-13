@@ -7,11 +7,16 @@ const navigation = [
   { name: 'Dashboard', href: 'dashboard', current: false },
 ]
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Menu1(props) {
+interface IMenu1Props {
+  activePage: string;
+  signOut: () => void;
+}
+
+export default function Menu1(props: IMenu1Props) {
   const activePage = props.activePage
   return (
     <Disclosure as="nav" className="bg-gray-800">
