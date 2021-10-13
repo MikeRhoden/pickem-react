@@ -1,126 +1,98 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import * as UserServices from '../../services/user'
 
 import './Login.css';
 
-function handleErrors(response) {
-  if (!response.ok) {
-    throw Error(response.statusText);
-  }
-  return response;
-}
-
-async function loginUser(credentials) {
-  return fetch('http://big12pickem.com/rpc/user/get/user.asp', {
-    method: 'POST',
-    header: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(credentials)
-  }).then(handleErrors).then(data => data.json().catch()
-  );
-}
-
-async function createUser(user) {
-  return fetch('http://big12pickem.com/rpc/user/post/user.asp', {
-    method: 'POST',
-    header: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(user)
-  }).then(handleErrors).then(data => data.json().catch()
-  );
-}
-
 export default function Login({ setToken }) {
-  const [mode, setMode] = useState('login');
+  const [mode, setMode] = useState('login')
 
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+  const [username, setUsername] = useState()
+  const [password, setPassword] = useState()
 
-  const [firstName, setFirstname] = useState();
-  const [lastName, setLastname] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
+  const [firstName, setFirstname] = useState()
+  const [lastName, setLastname] = useState()
+  const [confirmPassword, setConfirmPassword] = useState()
 
-  const [errorStyle, setErrorStyle] = useState({ display: 'none' });
-  const [formErrorMessage, setFormErrorMessage] = useState([]);
+  const [errorStyle, setErrorStyle] = useState({ display: 'none' })
+  const [formErrorMessage, setFormErrorMessage] = useState([])
 
-  let tempErrorMessages = [];
+  let tempErrorMessages = []
 
   const handleSignUpClick = (e) => {
-    e.preventDefault();
-    setFormErrorMessage([]);
-    setMode('signup');
+    e.preventDefault()
+    setFormErrorMessage([])
+    setMode('signup')
   }
 
   const handleLoginClick = (e) => {
-    e.preventDefault();
-    setFormErrorMessage([]);
-    setMode('login');
+    e.preventDefault()
+    setFormErrorMessage([])
+    setMode('login')
   }
 
   const handleLoginSubmit = async (e) => {
-    tempErrorMessages = [];
+    tempErrorMessages = []
     try {
-      e.preventDefault();
+      e.preventDefault()
 
       if (username === '' || username === undefined) {
-        tempErrorMessages.push('User name is blank.');
+        tempErrorMessages.push('User name is blank.')
       }
       if (password === '' || username === undefined) {
-        tempErrorMessages.push('Password is blank.');
+        tempErrorMessages.push('Password is blank.')
       }
       if (tempErrorMessages.length > 0) {
-        throw Error('Invalid');
+        throw Error('Invalid')
       }
 
-      await loginUser({
+      await UserServices.loginUser({
         username,
         password
       }).then(token => setToken(token))
     } catch (e) {
       if (e.message === 'Unauthorized') {
-        setErrorStyle({ display: 'block' });
+        setErrorStyle({ display: 'block' })
         setFormErrorMessage(['Sorry!  Login failed.', 'Let someone (me) know if you need a reset.']);
       } else if (e.message === 'Invalid') {
-        setErrorStyle({ display: 'block' });
-        setFormErrorMessage(tempErrorMessages);
+        setErrorStyle({ display: 'block' })
+        setFormErrorMessage(tempErrorMessages)
       }
     }
   }
 
   const handleSignUpSubmit = async (e) => {
-    tempErrorMessages = [];
+    tempErrorMessages = []
     try {
-      e.preventDefault();
+      e.preventDefault()
 
       if (username === '' || username === undefined) {
-        tempErrorMessages.push('User name is blank.');
+        tempErrorMessages.push('User name is blank.')
       } else if (username.length < 6) {
-        tempErrorMessages.push('User name must be at least 6 characters.');
+        tempErrorMessages.push('User name must be at least 6 characters.')
       }
       if (firstName === '' || firstName === undefined) {
-        tempErrorMessages.push('First name is blank.');
+        tempErrorMessages.push('First name is blank.')
       }
       if (lastName === '' || lastName === undefined) {
         tempErrorMessages.push('Last name is blank')
       }
       if (password === '' || password === undefined) {
-        tempErrorMessages.push('Password is blank.');
+        tempErrorMessages.push('Password is blank.')
       } else if (password.length < 6) {
         tempErrorMessages.push('Password must be at least 6 characters.')
       }
       if (confirmPassword === '' || confirmPassword === undefined) {
-        tempErrorMessages.push('Password confirmation is blank.');
+        tempErrorMessages.push('Password confirmation is blank.')
       }
       if (password !== confirmPassword) {
         tempErrorMessages.push('Password does not match confirm password.')
       }
       if (tempErrorMessages.length > 0) {
-        throw Error('Invalid');
+        throw Error('Invalid')
       }
 
-      await createUser({
+      await UserServices.createUser({
         username,
         firstName,
         lastName,
@@ -129,11 +101,11 @@ export default function Login({ setToken }) {
 
     } catch (e) {
       if (e.message === 'Conflict') {
-        setErrorStyle({ display: 'block' });
-        setFormErrorMessage(['Sorry!  That User Name already exists.']);
+        setErrorStyle({ display: 'block' })
+        setFormErrorMessage(['Sorry!  That User Name already exists.'])
       } else if (e.message === 'Invalid') {
-        setErrorStyle({ display: 'block' });
-        setFormErrorMessage(tempErrorMessages);
+        setErrorStyle({ display: 'block' })
+        setFormErrorMessage(tempErrorMessages)
       }
     }
   }
