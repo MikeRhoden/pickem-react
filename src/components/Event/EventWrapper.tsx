@@ -1,11 +1,38 @@
-import { React, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Event from './Event'
 
 import { getMatchupsForEvent } from '../../services/matchup'
 import { getUserPicksForEvent } from '../../services/picks'
+import { IProposition } from '../../models/IProposition'
+import { IEvent } from '../../models/IEvent'
 
-export default function EventWrapper(props) {
-  const [propositions, setPropositions] = useState([])
+interface IEventWrapperProps {
+  event: IEvent;
+  userId: string;
+}
+
+interface IMatchupForEvents {
+  game: number
+  home: string
+  ho: string;
+  visitor: string;
+  vis: string;
+  favorite: number;
+  line: number;
+  start: Date;
+  note: string;
+  winner: number;
+  priority: number;
+}
+
+interface IUserPicksForEvent {
+  game: number;
+  pick: string;
+  value: number;
+}
+
+export default function EventWrapper(props: IEventWrapperProps) {
+  const [propositions, setPropositions] = useState<IProposition[]>([])
   const eventId = props.event.id
   const [eventYear, eventWeek] = eventId.split('-')
   const eventStart = props.event.start
@@ -18,11 +45,11 @@ export default function EventWrapper(props) {
     getMatchupsForEvent(eventWeek, eventYear)
       .then(items => {
         if (mounted) {
-          const matchups = items
+          const matchups: IMatchupForEvents[] = items
           getUserPicksForEvent(eventWeek, eventYear, userId)
             .then(items => {
-              const picks = items;
-              const p = matchups.map(x => {
+              const picks: IUserPicksForEvent[] = items;
+              const p = matchups.map((x: IMatchupForEvents) => {
                 let selection = '', units = 0
                 if (picks.length > 0) {
                   const pick = picks.find(pick => pick.game === x.game)

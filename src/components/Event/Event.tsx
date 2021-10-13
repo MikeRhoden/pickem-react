@@ -4,6 +4,7 @@ import Group from '../Group/Group'
 import './Event.css'
 import { savePick } from '../../services/picks'
 import { IProposition } from '../../models/IProposition'
+import { IEvent } from '../../models/IEvent'
 
 interface IAction {
   index: number;
@@ -59,12 +60,6 @@ function propositionsReducer(propositions: IProposition[], action: IAction) {
     default:
       throw new Error('Unknown action type.')
   }
-}
-
-interface IEvent {
-  start: Date;
-  id: string;
-  maxUnits: number;
 }
 
 interface IEventProps {
