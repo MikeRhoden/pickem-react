@@ -1,37 +1,43 @@
-import React, { useState } from 'react'
+import React, { useState, MouseEvent, FormEvent } from 'react'
 import PropTypes from 'prop-types'
 import * as UserServices from '../../services/user'
+import { IUser } from '../../models/IUser'
 
 import './Login.css';
 
-export default function Login({ setToken }) {
-  const [mode, setMode] = useState('login')
+interface ILoginProps {
+  setToken: (user: IUser) => void
+}
 
-  const [username, setUsername] = useState()
-  const [password, setPassword] = useState()
+export default function Login(props: ILoginProps) {
+  const setToken = props.setToken;
+  const [mode, setMode] = useState<string>('login')
 
-  const [firstName, setFirstname] = useState()
-  const [lastName, setLastname] = useState()
-  const [confirmPassword, setConfirmPassword] = useState()
+  const [username, setUsername] = useState<string>()
+  const [password, setPassword] = useState<string>()
 
-  const [errorStyle, setErrorStyle] = useState({ display: 'none' })
-  const [formErrorMessage, setFormErrorMessage] = useState([])
+  const [firstName, setFirstname] = useState<string>()
+  const [lastName, setLastname] = useState<string>()
+  const [confirmPassword, setConfirmPassword] = useState<string>()
+
+  const [errorStyle, setErrorStyle] = useState<object>({ display: 'none' })
+  const [formErrorMessage, setFormErrorMessage] = useState<string[]>([])
 
   let tempErrorMessages = []
 
-  const handleSignUpClick = (e) => {
+  const handleSignUpClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setFormErrorMessage([])
     setMode('signup')
   }
 
-  const handleLoginClick = (e) => {
+  const handleLoginClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setFormErrorMessage([])
     setMode('login')
   }
 
-  const handleLoginSubmit = async (e) => {
+  const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     tempErrorMessages = []
     try {
       e.preventDefault()
@@ -50,18 +56,24 @@ export default function Login({ setToken }) {
         username,
         password
       }).then(token => setToken(token))
-    } catch (e) {
-      if (e.message === 'Unauthorized') {
+    } catch (err: unknown) {
+      let message: string = ''
+      if (typeof err === "string")
+        message = err
+      else if (err instanceof Error)
+        message = err.message;
+
+      if (message === 'Unauthorized') {
         setErrorStyle({ display: 'block' })
         setFormErrorMessage(['Sorry!  Login failed.', 'Let someone (me) know if you need a reset.']);
-      } else if (e.message === 'Invalid') {
+      } else if (message === 'Invalid') {
         setErrorStyle({ display: 'block' })
         setFormErrorMessage(tempErrorMessages)
       }
     }
   }
 
-  const handleSignUpSubmit = async (e) => {
+  const handleSignUpSubmit = async (e: FormEvent<HTMLFormElement>) => {
     tempErrorMessages = []
     try {
       e.preventDefault()
@@ -99,11 +111,16 @@ export default function Login({ setToken }) {
         password
       }).then(token => setToken(token))
 
-    } catch (e) {
-      if (e.message === 'Conflict') {
+    } catch (err: unknown) {
+      let message: string = ''
+      if (typeof err === "string")
+        message = err
+      else if (err instanceof Error)
+        message = err.message;
+      if (message === 'Conflict') {
         setErrorStyle({ display: 'block' })
         setFormErrorMessage(['Sorry!  That User Name already exists.'])
-      } else if (e.message === 'Invalid') {
+      } else if (message === 'Invalid') {
         setErrorStyle({ display: 'block' })
         setFormErrorMessage(tempErrorMessages)
       }
@@ -198,17 +215,21 @@ export default function Login({ setToken }) {
   }
 }
 
-function FormErrorMessage(props) {
+interface IFormErrorMessageProps {
+  errorMessages: string[];
+}
+
+function FormErrorMessage(props: IFormErrorMessageProps) {
   let errorCount = 0;
-  const errorMessages = props.errorMessages.map((message) => {
+  const errorMessages = props.errorMessages.map((message: string) => {
     errorCount++;
     return <li key={errorCount}>{message}</li>
-  });
+  })
   return (
     <ul className="login-error-messages">
       {errorMessages}
     </ul>
-  );
+  )
 }
 
 Login.propTypes = {

@@ -1,11 +1,6 @@
 import { useState } from 'react'
+import { IUser } from '../../models/IUser'
 
-interface IUser {
-  FirstName: string;
-  LastName: string;
-  UserId: string;
-  UserName: string;
-}
 export default function useUser() {
   const getUserId = () => {
     const userString: string = sessionStorage.getItem('user')
@@ -15,7 +10,7 @@ export default function useUser() {
 
   const [userId, setUserId] = useState(getUserId)
 
-  const saveUser = (user: IUser) => {
+  const saveUser = (user: IUser): void => {
     sessionStorage.setItem('user', JSON.stringify(user))
     setUserId(user.UserId)
   }
