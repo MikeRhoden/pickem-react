@@ -16,7 +16,8 @@ describe('Proposition use cases', () => {
   }
   const pick = {
     'selection': 'KSU',
-    'units': 20
+    'units': 20,
+    'isChanged': false
   }
   let info = {
     'start': new Date('September 4, 2010 13:00'),
@@ -93,7 +94,8 @@ describe('Proposition use cases', () => {
       info={info}
       group={group}
       isTooLate={false}
-      onChange={mockOnChange} />)
+      onChange={mockOnChange}
+      onClear={mockOnClear} />)
 
     expect(screen.queryByText(/pick by/i)).toBeNull()
   })
@@ -108,7 +110,8 @@ describe('Proposition use cases', () => {
       info={info}
       group={group}
       isTooLate={false}
-      onChange={mockOnChange} />)
+      onChange={mockOnChange}
+      onClear={mockOnClear} />)
 
     expect(screen.getByText('(-18.5)').parentElement).toHaveClass('spread')
     expect(screen.getByText('(-18.5)').parentElement.previousSibling).toHaveClass('proposition-visitor')
