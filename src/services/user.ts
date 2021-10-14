@@ -1,14 +1,26 @@
-function handleErrors(response) {
+interface ICredentials {
+  username: string;
+  password: string;
+}
+
+interface ICreateUser {
+  username: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+}
+
+function handleErrors(response: Response) {
   if (!response.ok) {
     throw Error(response.statusText);
   }
   return response;
 }
 
-export async function loginUser(credentials) {
+export async function loginUser(credentials: ICredentials) {
   return fetch('http://big12pickem.com/rpc/user/get/user.asp', {
     method: 'POST',
-    header: {
+    headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(credentials)
@@ -16,10 +28,10 @@ export async function loginUser(credentials) {
   );
 }
 
-export async function createUser(user) {
+export async function createUser(user: ICreateUser) {
   return fetch('http://big12pickem.com/rpc/user/post/user.asp', {
     method: 'POST',
-    header: {
+    headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(user)

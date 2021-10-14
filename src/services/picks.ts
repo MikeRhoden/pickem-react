@@ -1,11 +1,20 @@
-function handleErrors(response) {
+interface IUserPickForSave {
+  userId: string;
+  week: number;
+  year: number;
+  game: number;
+  pick: string;
+  value: number;
+}
+
+function handleErrors(response: Response) {
   if (!response.ok) {
     throw Error(response.statusText)
   }
   return response
 }
 
-export async function getUserPicksForEvent(eventWeek, eventYear, userId) {
+export async function getUserPicksForEvent(eventWeek: string, eventYear: string, userId: string) {
   return fetch('http://big12pickem.com/rpc/pick/get/pick.asp?eventWeek=' + eventWeek + '&eventYear=' + eventYear + '&userId=' + userId)
     .then(handleErrors)
     .then(data => data.json())
@@ -16,7 +25,7 @@ export async function getUserPicksForEvent(eventWeek, eventYear, userId) {
     })
 }
 
-export async function savePick(pick) {
+export async function savePick(pick: IUserPickForSave) {
   let qs = 'userID=' + pick.userId
   qs += '&week=' + pick.week
   qs += '&year=' + pick.year

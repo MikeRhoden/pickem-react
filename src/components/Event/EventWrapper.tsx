@@ -5,6 +5,7 @@ import { getMatchupsForEvent } from '../../services/matchup'
 import { getUserPicksForEvent } from '../../services/picks'
 import { IProposition } from '../../models/IProposition'
 import { IEvent } from '../../models/IEvent'
+import { IUserPicksForEvent } from '../../models/IUserPicksForEvent'
 
 interface IEventWrapperProps {
   event: IEvent;
@@ -23,12 +24,6 @@ interface IMatchupForEvents {
   note: string;
   winner: number;
   priority: number;
-}
-
-interface IUserPicksForEvent {
-  game: number;
-  pick: string;
-  value: number;
 }
 
 export default function EventWrapper(props: IEventWrapperProps) {

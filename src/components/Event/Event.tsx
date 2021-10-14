@@ -268,7 +268,7 @@ export default function Event(props: IEventProps) {
           game: proposition.matchup.number,
           pick: proposition.pick.selection,
           value: proposition.pick.units,
-          year: eventYear
+          year: Number(eventYear)
         })
       }
       index++;

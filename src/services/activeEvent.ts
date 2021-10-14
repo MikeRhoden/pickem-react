@@ -1,4 +1,4 @@
-function handleErrors(response) {
+function handleErrors(response: Response) {
   if (!response.ok) {
     throw Error(response.statusText)
   }

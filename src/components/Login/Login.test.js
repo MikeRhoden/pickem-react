@@ -27,7 +27,7 @@ describe('Login Use Cases.', () => {
             'http://big12pickem.com/rpc/user/get/user.asp',
             expect.objectContaining({
                 method: 'POST',
-                header: {
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(credentials),
@@ -57,7 +57,7 @@ describe('Login Use Cases.', () => {
             'http://big12pickem.com/rpc/user/get/user.asp',
             expect.objectContaining({
                 method: 'POST',
-                header: {
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(credentials),
@@ -108,7 +108,7 @@ describe('Sign Up Use Cases.', () => {
             'http://big12pickem.com/rpc/user/post/user.asp',
             expect.objectContaining({
                 method: 'POST',
-                header: {
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(user)
@@ -140,7 +140,7 @@ describe('Sign Up Use Cases.', () => {
             'http://big12pickem.com/rpc/user/post/user.asp',
             expect.objectContaining({
                 method: 'POST',
-                header: {
+                headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(user)
