@@ -2,13 +2,11 @@ import * as React from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Login from './Login'
+import * as MockResponses from './LoginMockResponses'
+
 
 describe('Login Use Cases.', () => {
   const mockSaveUser = jest.fn()
-
-  beforeAll(() => {
-    jest.spyOn(window, 'fetch')
-  })
 
   test('Clicking submit with VALID credentials should save user to application method.', async () => {
     const credentials = {
@@ -16,10 +14,11 @@ describe('Login Use Cases.', () => {
       "password": "password"
     }
     render(<Login setToken={mockSaveUser} />);
-    window.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
+
+    jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+      return Promise.resolve(MockResponses.MockOk());
     });
+
     userEvent.type(screen.getByPlaceholderText('User Name / Email'), 'username')
     userEvent.type(screen.getByPlaceholderText('password'), 'password')
     userEvent.click(screen.getByRole('button', { name: /sign in/i }))
@@ -41,12 +40,10 @@ describe('Login Use Cases.', () => {
       "password": "password"
     }
     render(<Login setToken={mockSaveUser} />);
-    window.fetch.mockResolvedValueOnce({
-      ok: false,
-      status: 401,
-      statusText: 'Unauthorized',
-      json: async () => ({ message: 'Unauthorized' }),
+    jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+      return Promise.resolve(MockResponses.MockUnauthorized());
     });
+
     userEvent.type(screen.getByPlaceholderText('User Name / Email'), 'username')
     userEvent.type(screen.getByPlaceholderText('password'), 'password')
     userEvent.click(screen.getByRole('button', { name: /sign in/i }))
@@ -79,16 +76,11 @@ describe('Sign Up Use Cases.', () => {
     "password": "password"
   }
 
-  beforeAll(() => {
-    jest.spyOn(window, 'fetch')
-  })
-
   test('Signing up with VALID user values creates new user.', async () => {
     render(<Login setToken={mockSaveUser} />)
-    window.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true })
-    })
+    jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+      return Promise.resolve(MockResponses.MockOk());
+    });
 
     userEvent.click(screen.getByText(/sign up/i))
     userEvent.type(screen.getByPlaceholderText('User Name / Email'), 'username')
@@ -112,12 +104,9 @@ describe('Sign Up Use Cases.', () => {
 
   test('Signing up with a user name that is already taken tells the user.', async () => {
     render(<Login setToken={mockSaveUser} />)
-    window.fetch.mockResolvedValueOnce({
-      ok: false,
-      status: 409,
-      statusText: 'Conflict',
-      json: async () => ({ message: 'Conflict' })
-    })
+    jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+      return Promise.resolve(MockResponses.MockConflict());
+    });
 
     userEvent.click(screen.getByText(/sign up/i))
     userEvent.type(screen.getByPlaceholderText('User Name / Email'), 'username')
