@@ -2,7 +2,7 @@ import * as React from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Login from './Login'
-import * as MockResponses from './LoginMockResponses'
+import * as MockResponses from '../../test-helpers/MockFetchResponses'
 
 
 describe('Login Use Cases.', () => {
@@ -17,7 +17,7 @@ describe('Login Use Cases.', () => {
 
     jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
       return Promise.resolve(MockResponses.MockOk());
-    });
+    })
 
     userEvent.type(screen.getByPlaceholderText('User Name / Email'), 'username')
     userEvent.type(screen.getByPlaceholderText('password'), 'password')

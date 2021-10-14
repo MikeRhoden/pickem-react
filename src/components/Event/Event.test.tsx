@@ -1,8 +1,10 @@
 import { render, screen } from '@testing-library/react'
-import MockPropositions from './MockPropositions'
+import MockPropositions from '../../test-helpers/MockPropositions'
 import Event from './Event'
 import userEvent from '@testing-library/user-event'
 import ReactModal from 'react-modal'
+import * as MockResponses from '../../test-helpers/MockFetchResponses'
+
 
 describe('Event use cases (with all games selected and max units selected)', () => {
   // times to test based on MockPropositions
@@ -42,12 +44,10 @@ describe('Event use cases (with all games selected and max units selected)', () 
       .mockImplementation(() => earliestSaveTime.valueOf()
       )
 
+    jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+      return Promise.resolve(MockResponses.MockOk())
+    })
 
-    jest.spyOn(window, 'fetch')
-    window.fetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
     const unitSelector = screen.queryAllByRole('combobox')[10]
     const saveButton = screen.queryAllByRole('button', { name: /save/i })[1]
 
@@ -102,11 +102,9 @@ describe('Event use cases (with all games selected and max units selected)', () 
     expect(screen.queryByText('Can\'t save. You are over 200 units.')).not.toBeInTheDocument()
     expect(unitSelector).toHaveValue('30')
 
-    jest.spyOn(window, 'fetch')
-    window.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
+    jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+      return Promise.resolve(MockResponses.MockOk())
+    })
     userEvent.selectOptions(unitSelector, '4')
     userEvent.click(saveButton)
     expect(screen.queryByText('Can\'t save. You are over 200 units.')).not.toBeInTheDocument()
@@ -239,11 +237,9 @@ describe('Event use cases (with all games selected and max units selected)', () 
 
     userEvent.click(visRadioForLateGameShouldSave)
     userEvent.selectOptions(unitSelectorShouldSave, '4')
-    jest.spyOn(window, 'fetch')
-    window.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
+    jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+      return Promise.resolve(MockResponses.MockOk())
+    })
     userEvent.click(saveButton) // should save these ^ selections
 
     userEvent.click(homeRadioForLateGameShouldntSave)
@@ -381,16 +377,15 @@ describe('Event use cases (with all games selected and max units selected)', () 
     const unitSelectors = screen.queryAllByRole('combobox')
     expect(unitSelectors.length).toBe(20)
 
-    const savedButtons = screen.queryAllByRole('button', { name: /saved/i })
+    const savedButtons: HTMLButtonElement[] = screen.queryAllByRole('button', { name: /saved/i }) as HTMLButtonElement[]
     expect(savedButtons[0]).toHaveStyle('backgroundColor: #CCCCCC')
     expect(savedButtons[0]).toBeDisabled()
 
     //earliestSaveTime = new Date('September 1, 2020 10:10 AM')
-    jest
-      .spyOn(global.Date, 'now')
-      .mockImplementationOnce(() => earliestSaveTime.valueOf()
-      );
-    const unitsToClear = screen.queryAllByRole('combobox')[10].value
+    jest.spyOn(global.Date, 'now').mockImplementationOnce(() => earliestSaveTime.valueOf());
+
+    const unitSelector: HTMLFormElement = unitSelectors[10] as HTMLFormElement;
+    const unitsToClear: number = unitSelector.value
     userEvent.click(clearButtons[10]) //clear first optoinal game
     expect(screen.queryAllByRole('radio', { checked: true }).length).toBe(19)
 
