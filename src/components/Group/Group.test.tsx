@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import MockPropositions from '../Event/MockPropositions'
+import MockPropositions from '../../test-helpers/MockPropositions'
 import Group from './Group'
 
 describe('Group use cases.', () => {
