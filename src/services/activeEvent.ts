@@ -6,7 +6,7 @@ function handleErrors(response: Response) {
 }
 
 export async function fetchEvent() {
-  return fetch('http://big12pickem.com/rpc/event/get/event.asp?active=1')
+  return fetch(process.env['REACT_APP_FETCH_ACTIVE_EVENT'])
     .then(handleErrors)
     .then(data => data.json())
     .catch(e => {

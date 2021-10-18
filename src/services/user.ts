@@ -18,8 +18,11 @@ function handleErrors(response: Response) {
 }
 
 export async function loginUser(credentials: ICredentials) {
-  return fetch('http://big12pickem.com/rpc/user/get/user.asp', {
+  return fetch(process.env['REACT_APP_LOGIN'], {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(credentials)
   }).then(handleErrors).then(data => data.json().catch()
   );
