@@ -1,11 +1,10 @@
 import { Disclosure } from '@headlessui/react'
 import { LogoutIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
+import { useEffect, useState } from 'react'
+import { IMenuItem } from '../../models/IMenuItem'
+import { fetchMenu } from '../../services/menu'
 
 
-const navigation = [
-  { name: 'Your Picks', href: 'event', current: false },
-  { name: 'Dashboard', href: 'dashboard', current: false },
-]
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -17,7 +16,16 @@ interface IMenu1Props {
 }
 
 export default function Menu1(props: IMenu1Props) {
+  const [navigation, setNavigation] = useState<IMenuItem[]>([])
   const activePage = props.activePage
+  useEffect(() => {
+    async function fetchData() {
+      const menuItems: IMenuItem[] = await fetchMenu()
+      return menuItems
+    }
+    fetchData().then(data => setNavigation(data))
+  }, [props])
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -52,15 +60,15 @@ export default function Menu1(props: IMenu1Props) {
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
                       <a
-                        key={item.name}
-                        href={item.href}
+                        key={item.Name}
+                        href={item.Href}
                         className={classNames(
-                          item.href === activePage ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          item.Href === activePage ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'px-3 py-2 rounded-md text-sm font-medium'
                         )}
-                        aria-current={item.href === activePage ? 'page' : undefined}
+                        aria-current={item.Href === activePage ? 'page' : undefined}
                       >
-                        {item.name}
+                        {item.Name}
                       </a>
                     ))}
                   </div>
@@ -79,15 +87,15 @@ export default function Menu1(props: IMenu1Props) {
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map((item) => (
                 <a
-                  key={item.name}
-                  href={item.href}
+                  key={item.Name}
+                  href={item.Href}
                   className={classNames(
-                    item.href === activePage ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                    item.Href === activePage ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                     'block px-3 py-2 rounded-md text-base font-medium'
                   )}
-                  aria-current={item.href === activePage ? 'page' : undefined}
+                  aria-current={item.Href === activePage ? 'page' : undefined}
                 >
-                  {item.name}
+                  {item.Name}
                 </a>
               ))}
             </div>
