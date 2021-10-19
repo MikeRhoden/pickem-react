@@ -1,3 +1,5 @@
+import { IUser } from "../models/IUser";
+
 function handleErrors(response: Response) {
   if (!response.ok) {
     throw Error(response.statusText)
@@ -6,7 +8,14 @@ function handleErrors(response: Response) {
 }
 
 export async function fetchEvent() {
-  return fetch(process.env['REACT_APP_FETCH_ACTIVE_EVENT'])
+  const user: IUser = JSON.parse(sessionStorage.getItem('user'))
+  const headers = new Headers({
+    'Authorization': 'Bearer ' + user.Token
+  });
+  return fetch(process.env['REACT_APP_FETCH_ACTIVE_EVENT'],
+    {
+      headers: headers
+    })
     .then(handleErrors)
     .then(data => data.json())
     .catch(e => {

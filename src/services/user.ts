@@ -1,3 +1,5 @@
+import { IUser } from "../models/IUser";
+
 interface ICredentials {
   username: string;
   password: string;
@@ -18,11 +20,14 @@ function handleErrors(response: Response) {
 }
 
 export async function loginUser(credentials: ICredentials) {
+  const headers = new Headers({
+    'Content-Type': 'application/json'
+  });
+
+
   return fetch(process.env['REACT_APP_LOGIN'], {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: headers,
     body: JSON.stringify(credentials)
   }).then(handleErrors).then(data => data.json().catch()
   );
