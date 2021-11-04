@@ -5,6 +5,7 @@ import './Event.css'
 import { savePick } from '../../services/picks'
 import { IProposition } from '../../models/IProposition'
 import { IEvent } from '../../models/IEvent'
+import { Proposition } from '../Proposition/Proposition'
 
 interface IAction {
   index: number;
@@ -81,9 +82,6 @@ export default function Event(props: IEventProps) {
   const [eventYear, eventWeek] = eventId.split('-')
 
   const maxUnits = props.event.maxUnits
-
-  const requiredGames = propositions.filter(p => p.group.name === 'required')
-  const optionalGames = propositions.filter(p => p.group.name === 'optional')
 
   const deadLine = setDeadLine(eventStart, eventYear, eventWeek)
 
@@ -183,7 +181,7 @@ export default function Event(props: IEventProps) {
     setIsSaved(false)
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLElement>) => {
     const { name, index, value } = getPropositionProperties(e.target as HTMLInputElement)
 
     // event start new Date('September 4, 2010 10:00 AM')
@@ -276,29 +274,35 @@ export default function Event(props: IEventProps) {
     setIsSaved(true)
   }
 
+  const { requiredGroup1Children, requiredGroup2Children,
+    optionalGroup1Children, optionalGroup2Children } = getGroupChildren(propositions, handleClear, handleChange)
+
   return (
     <div className="event">
       {deadLine}
       <div className="group1">
         <Group
+          group1={requiredGroup1Children}
+          group2={requiredGroup2Children}
           isSaved={isSaved}
           groupName={'Required Games'}
-          propositions={requiredGames}
+          // propositions={requiredGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
-          onClear={(e: MouseEvent<HTMLButtonElement>) => handleClear(e)}
-          onChange={(e: ChangeEvent<HTMLElement>) => handleChange(e)}
+          // onClear={(e: MouseEvent<HTMLButtonElement>) => handleClear(e)}
+          // onChange={(e: ChangeEvent<HTMLElement>) => handleChange(e)}
           onSave={() => handleSave()} />
       </div>
       <div className="group2">
         <Group
-          isSaved={isSaved}
+          group1={optionalGroup1Children}
+          group2={optionalGroup2Children} isSaved={isSaved}
           groupName={'Optional Games'}
-          propositions={optionalGames}
+          // propositions={optionalGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
-          onClear={(e: MouseEvent<HTMLButtonElement>) => handleClear(e)}
-          onChange={(e: ChangeEvent<HTMLElement>) => handleChange(e)}
+          // onClear={(e: MouseEvent<HTMLButtonElement>) => handleClear(e)}
+          // onChange={(e: ChangeEvent<HTMLElement>) => handleChange(e)}
           onSave={() => handleSave()} />
       </div>
       <ReactModal
@@ -309,31 +313,103 @@ export default function Event(props: IEventProps) {
       </ReactModal>
     </div>
   )
-}
 
-function setDeadLine(eventStart: Date, eventYear: string, eventWeek: string) {
-  const gridLink = (
-    <a href={'http://big12pickem.com/results_grid_' + eventYear + '.asp?w=' + eventWeek}
-      target="_blank" rel="noreferrer">View Grid</a>
-  )
-  const currentTime = new Date(Date.now())
-  const tooLate = currentTime > eventStart
-  const user = sessionStorage.getItem('user')
-  const userString = JSON.parse(user)
-  const firstName = userString?.FirstName
-  if (tooLate) {
-    return (
-      <div className="deadline">Hi {firstName}! The pick deadline has passed: {gridLink}</div>
+  function getGroupChildren(propositions: IProposition[], handleClear: any, handleChange: any) {
+    const requiredGames = propositions.filter(p => p.group.name === 'required')
+    const requiredPivot = Math.floor(requiredGames.length / 2)
+    const requiredGroup1 = requiredGames.slice(0, requiredPivot)
+    const requiredGroup1Children = (
+      requiredGroup1.map((proposition: IProposition) => {
+        return <Proposition
+          key={proposition.key}
+          matchup={proposition.matchup}
+          pick={proposition.pick}
+          info={proposition.info}
+          group={proposition.group}
+          isTooLate={proposition.isTooLate}
+          onClear={handleClear}
+          onChange={handleChange} />
+      })
     )
-  }
-  const dateEventStart = new Date(eventStart)
-  const deadlineDayTime = getDayOfWeekEn(dateEventStart) + ' ' + dateEventStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  return (
-    <div className="deadline">Hi {firstName}! Make picks by {deadlineDayTime}</div>
-  )
+    const requiredGroup2 = requiredGames.slice(requiredPivot)
+    const requiredGroup2Children = (
+      requiredGroup2.map((proposition: IProposition) => {
+        return <Proposition
+          key={proposition.key}
+          matchup={proposition.matchup}
+          pick={proposition.pick}
+          info={proposition.info}
+          group={proposition.group}
+          isTooLate={proposition.isTooLate}
+          onClear={handleClear}
+          onChange={handleChange} />
+      })
+    )
 
-  function getDayOfWeekEn(date: Date) {
-    const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
-    return new Intl.DateTimeFormat('en-US', options).format(date)
+    const optionalGames = propositions.filter(p => p.group.name === 'optional')
+    const optionalPivot = Math.floor(optionalGames.length / 2)
+    const optionalGroup1 = optionalGames.slice(0, optionalPivot)
+    const optionalGroup1Children = (
+      optionalGroup1.map((proposition: IProposition) => {
+        return <Proposition
+          key={proposition.key}
+          matchup={proposition.matchup}
+          pick={proposition.pick}
+          info={proposition.info}
+          group={proposition.group}
+          isTooLate={proposition.isTooLate}
+          onClear={handleClear}
+          onChange={handleChange} />
+      })
+    )
+    const optionalGroup2 = optionalGames.slice(optionalPivot)
+    const optionalGroup2Children = (
+      optionalGroup2.map((proposition: IProposition) => {
+        return <Proposition
+          key={proposition.key}
+          matchup={proposition.matchup}
+          pick={proposition.pick}
+          info={proposition.info}
+          group={proposition.group}
+          isTooLate={proposition.isTooLate}
+          onClear={handleClear}
+          onChange={handleChange} />
+      })
+    )
+    return {
+      requiredGroup1Children,
+      requiredGroup2Children,
+      optionalGroup1Children,
+      optionalGroup2Children
+    }
+  }
+
+  function setDeadLine(eventStart: Date, eventYear: string, eventWeek: string) {
+    const gridLink = (
+      <a href={'http://big12pickem.com/results_grid_' + eventYear + '.asp?w=' + eventWeek}
+        target="_blank" rel="noreferrer">View Grid</a>
+    )
+    const currentTime = new Date(Date.now())
+    const tooLate = currentTime > eventStart
+    const user = sessionStorage.getItem('user')
+    const userString = JSON.parse(user)
+    const firstName = userString?.FirstName
+    if (tooLate) {
+      return (
+        <div className="deadline">Hi {firstName}! The pick deadline has passed: {gridLink}</div>
+      )
+    }
+    const dateEventStart = new Date(eventStart)
+    const deadlineDayTime = getDayOfWeekEn(dateEventStart) + ' ' + dateEventStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return (
+      <div className="deadline">Hi {firstName}! Make picks by {deadlineDayTime}</div>
+    )
+
+    function getDayOfWeekEn(date: Date) {
+      const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
+      return new Intl.DateTimeFormat('en-US', options).format(date)
+    }
+
+
   }
 }

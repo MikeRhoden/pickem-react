@@ -1,30 +1,23 @@
 import React, { MouseEventHandler } from 'react'
 import './Group.css'
-import { Proposition } from '../Proposition/Proposition'
-import { ChangeEventHandler } from 'react'
-import { IProposition } from '../../models/IProposition'
 
 interface IGroupProps {
   isSaved: boolean;
-  propositions: IProposition[];
   totalUnits: number;
   maxUnits: number;
   groupName: string;
   onSave: MouseEventHandler;
-  onClear: MouseEventHandler
-  onChange: ChangeEventHandler
+  group1: any;
+  group2: any;
 }
 
 export default function Group(props: IGroupProps) {
   const isSaved = props.isSaved
   const saveBGColor = isSaved ? '#CCCCCC' : '#0099CC'
-  const propositions = props.propositions
-  const pivot = Math.floor(propositions.length / 2)
-  const group1 = propositions.slice(0, pivot)
-  const group2 = propositions.slice(pivot)
   const totalUnits = props.totalUnits
   const maxUnits = props.maxUnits
   const hasExceededMaxUnits = totalUnits > maxUnits
+  const groupName = props.groupName
 
   return (
     <div className="group">
@@ -33,7 +26,7 @@ export default function Group(props: IGroupProps) {
           {totalUnits}/{maxUnits}
         </div>
         <div className="group-name">
-          {props.groupName}
+          {groupName}
         </div>
         <div className="save-event-container">
           <button
@@ -42,37 +35,16 @@ export default function Group(props: IGroupProps) {
             className="save-event"
             style={{ backgroundColor: saveBGColor }}
             onClick={props.onSave}>{isSaved ? 'Saved' : 'Save'}</button>
-
         </div>
       </div>
       <div className="group-area1">
         <div className="group-area">
-          {group1.map((proposition) => {
-            return <Proposition
-              key={proposition.key}
-              matchup={proposition.matchup}
-              pick={proposition.pick}
-              info={proposition.info}
-              group={proposition.group}
-              isTooLate={proposition.isTooLate}
-              onClear={props.onClear}
-              onChange={props.onChange} />
-          })}
+          {props.group1}
         </div>
       </div>
       <div className="group-area2">
         <div className="group-area">
-          {group2.map((proposition) => {
-            return <Proposition
-              key={proposition.key}
-              matchup={proposition.matchup}
-              pick={proposition.pick}
-              info={proposition.info}
-              group={proposition.group}
-              isTooLate={proposition.isTooLate}
-              onClear={props.onClear}
-              onChange={props.onChange} />
-          })}
+          {props.group2}
         </div>
       </div>
     </div>
