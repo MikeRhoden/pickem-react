@@ -11,7 +11,7 @@ export async function fetchMenu() {
     "authorization": "Bearer " + token
   })
 
-  return fetch('http://localhost:5000/api/menu', {
+  return fetch('http://localhost:5050/api/menu', {
     headers: headers
   })
     .then(data => data.json())

@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from 'react'
 import './Group.css'
-import Proposition from '../Proposition/Proposition'
+import { Proposition } from '../Proposition/Proposition'
 import { ChangeEventHandler } from 'react'
 import { IProposition } from '../../models/IProposition'
 

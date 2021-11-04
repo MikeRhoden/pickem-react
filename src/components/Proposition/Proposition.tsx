@@ -5,7 +5,7 @@ import { IMatchup } from '../../models/IMatchup'
 import { IPick } from '../../models/IPick'
 import './Proposition.css'
 
-interface IPropositionProps {
+type IPropositionProps = {
   matchup: IMatchup;
   info: IInfo;
   isTooLate: boolean;
@@ -15,7 +15,7 @@ interface IPropositionProps {
   onChange: ChangeEventHandler;
 }
 
-export default function Proposition(props: IPropositionProps) {
+export const Proposition: React.FC<IPropositionProps> = (props) => {
   const visitor = props.matchup.visitor
   const vis = props.matchup.vis
   const home = props.matchup.home
