@@ -5,7 +5,7 @@ import './Event.css'
 import { savePick } from '../../services/picks'
 import { IProposition } from '../../models/IProposition'
 import { IEvent } from '../../models/IEvent'
-import { Proposition } from '../Proposition/Proposition'
+import { getGroupChildren } from './GroupChildren'
 
 interface IAction {
   index: number;
@@ -63,13 +63,13 @@ function propositionsReducer(propositions: IProposition[], action: IAction) {
   }
 }
 
-interface IEventProps {
+type EventProps = {
   userId: string;
   event: IEvent;
   propositions: IProposition[];
 }
 
-export default function Event(props: IEventProps) {
+export default function Event(props: EventProps) {
   const [isSaved, setIsSaved] = useState(true)
   const [propositions, dispatch] = useReducer(propositionsReducer, props.propositions)
   const [shouldShowModal, setShouldShowModal] = useState(false)
@@ -286,11 +286,8 @@ export default function Event(props: IEventProps) {
           group2={requiredGroup2Children}
           isSaved={isSaved}
           groupName={'Required Games'}
-          // propositions={requiredGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
-          // onClear={(e: MouseEvent<HTMLButtonElement>) => handleClear(e)}
-          // onChange={(e: ChangeEvent<HTMLElement>) => handleChange(e)}
           onSave={() => handleSave()} />
       </div>
       <div className="group2">
@@ -298,11 +295,8 @@ export default function Event(props: IEventProps) {
           group1={optionalGroup1Children}
           group2={optionalGroup2Children} isSaved={isSaved}
           groupName={'Optional Games'}
-          // propositions={optionalGames}
           maxUnits={maxUnits}
           totalUnits={totalUnits}
-          // onClear={(e: MouseEvent<HTMLButtonElement>) => handleClear(e)}
-          // onChange={(e: ChangeEvent<HTMLElement>) => handleChange(e)}
           onSave={() => handleSave()} />
       </div>
       <ReactModal
@@ -313,76 +307,6 @@ export default function Event(props: IEventProps) {
       </ReactModal>
     </div>
   )
-
-  function getGroupChildren(propositions: IProposition[], handleClear: any, handleChange: any) {
-    const requiredGames = propositions.filter(p => p.group.name === 'required')
-    const requiredPivot = Math.floor(requiredGames.length / 2)
-    const requiredGroup1 = requiredGames.slice(0, requiredPivot)
-    const requiredGroup1Children = (
-      requiredGroup1.map((proposition: IProposition) => {
-        return <Proposition
-          key={proposition.key}
-          matchup={proposition.matchup}
-          pick={proposition.pick}
-          info={proposition.info}
-          group={proposition.group}
-          isTooLate={proposition.isTooLate}
-          onClear={handleClear}
-          onChange={handleChange} />
-      })
-    )
-    const requiredGroup2 = requiredGames.slice(requiredPivot)
-    const requiredGroup2Children = (
-      requiredGroup2.map((proposition: IProposition) => {
-        return <Proposition
-          key={proposition.key}
-          matchup={proposition.matchup}
-          pick={proposition.pick}
-          info={proposition.info}
-          group={proposition.group}
-          isTooLate={proposition.isTooLate}
-          onClear={handleClear}
-          onChange={handleChange} />
-      })
-    )
-
-    const optionalGames = propositions.filter(p => p.group.name === 'optional')
-    const optionalPivot = Math.floor(optionalGames.length / 2)
-    const optionalGroup1 = optionalGames.slice(0, optionalPivot)
-    const optionalGroup1Children = (
-      optionalGroup1.map((proposition: IProposition) => {
-        return <Proposition
-          key={proposition.key}
-          matchup={proposition.matchup}
-          pick={proposition.pick}
-          info={proposition.info}
-          group={proposition.group}
-          isTooLate={proposition.isTooLate}
-          onClear={handleClear}
-          onChange={handleChange} />
-      })
-    )
-    const optionalGroup2 = optionalGames.slice(optionalPivot)
-    const optionalGroup2Children = (
-      optionalGroup2.map((proposition: IProposition) => {
-        return <Proposition
-          key={proposition.key}
-          matchup={proposition.matchup}
-          pick={proposition.pick}
-          info={proposition.info}
-          group={proposition.group}
-          isTooLate={proposition.isTooLate}
-          onClear={handleClear}
-          onChange={handleChange} />
-      })
-    )
-    return {
-      requiredGroup1Children,
-      requiredGroup2Children,
-      optionalGroup1Children,
-      optionalGroup2Children
-    }
-  }
 
   function setDeadLine(eventStart: Date, eventYear: string, eventWeek: string) {
     const gridLink = (
