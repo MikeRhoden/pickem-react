@@ -1,11 +1,12 @@
-import React, { useState, useReducer, MouseEvent, ChangeEvent } from 'react'
+import React, { useState, useReducer, MouseEvent, ChangeEvent, MouseEventHandler, ChangeEventHandler } from 'react'
 import ReactModal from 'react-modal'
-import Group from '../Group/Group'
+import { Group } from '../Group/Group'
 import './Event.css'
 import { savePick } from '../../services/picks'
 import { IProposition } from '../../models/IProposition'
 import { IEvent } from '../../models/IEvent'
 import { getGroupChildren } from './GroupChildren'
+import { GroupHeader } from '../Group/GroupHeader'
 
 interface IAction {
   index: number;
@@ -151,7 +152,7 @@ export default function Event(props: EventProps) {
     showModal('Can\'t change game.', ['Game ' + (index + 1) + ' has already started.'])
   }
 
-  const handleClear = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleClear: MouseEventHandler = (event: MouseEvent<HTMLButtonElement>) => {
     const target: HTMLButtonElement = event.currentTarget
     const index = Number(target.name.split('-')[1]) - 1;
 
@@ -181,7 +182,7 @@ export default function Event(props: EventProps) {
     setIsSaved(false)
   }
 
-  const handleChange = (e: ChangeEvent<HTMLElement>) => {
+  const handleChange: ChangeEventHandler = (e: ChangeEvent<HTMLElement>) => {
     const { name, index, value } = getPropositionProperties(e.target as HTMLInputElement)
 
     // event start new Date('September 4, 2010 10:00 AM')
@@ -277,27 +278,36 @@ export default function Event(props: EventProps) {
   const { requiredGroup1Children, requiredGroup2Children,
     optionalGroup1Children, optionalGroup2Children } = getGroupChildren(propositions, handleClear, handleChange)
 
+  const groupHeaderRequired = <GroupHeader
+    isSaved={isSaved}
+    groupName={'Required Games'}
+    maxUnits={maxUnits}
+    totalUnits={totalUnits}
+    onSave={handleSave} />
+
+  const groupHeaderOptional = <GroupHeader
+    isSaved={isSaved}
+    groupName={'Optional Games'}
+    maxUnits={maxUnits}
+    totalUnits={totalUnits}
+    onSave={handleSave} />
+
   return (
     <div className="event">
       {deadLine}
       <div className="group1">
         <Group
+          groupHeader={groupHeaderRequired}
           group1={requiredGroup1Children}
           group2={requiredGroup2Children}
-          isSaved={isSaved}
-          groupName={'Required Games'}
-          maxUnits={maxUnits}
-          totalUnits={totalUnits}
-          onSave={() => handleSave()} />
+        />
       </div>
       <div className="group2">
         <Group
+          groupHeader={groupHeaderOptional}
           group1={optionalGroup1Children}
-          group2={optionalGroup2Children} isSaved={isSaved}
-          groupName={'Optional Games'}
-          maxUnits={maxUnits}
-          totalUnits={totalUnits}
-          onSave={() => handleSave()} />
+          group2={optionalGroup2Children}
+        />
       </div>
       <ReactModal
         appElement={document.querySelector('.event')}

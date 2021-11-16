@@ -1,9 +1,10 @@
 import { IProposition } from "../../models/IProposition"
 import { Proposition } from "../Proposition/Proposition"
-
+import { MouseEventHandler, ChangeEventHandler } from 'react'
 export
-  const getGroupChildren = (propositions: IProposition[], handleClear: any, handleChange: any) => {
+  const getGroupChildren = (propositions: IProposition[], handleClear: MouseEventHandler, handleChange: ChangeEventHandler) => {
     const requiredGames = propositions.filter(p => p.group.name === 'required')
+
     const requiredPivot = Math.floor(requiredGames.length / 2)
     const requiredGroup1 = requiredGames.slice(0, requiredPivot)
     const requiredGroup1Children = (
@@ -19,6 +20,7 @@ export
           onChange={handleChange} />
       })
     )
+
     const requiredGroup2 = requiredGames.slice(requiredPivot)
     const requiredGroup2Children = (
       requiredGroup2.map((proposition: IProposition) => {
@@ -35,6 +37,7 @@ export
     )
 
     const optionalGames = propositions.filter(p => p.group.name === 'optional')
+
     const optionalPivot = Math.floor(optionalGames.length / 2)
     const optionalGroup1 = optionalGames.slice(0, optionalPivot)
     const optionalGroup1Children = (
@@ -50,6 +53,7 @@ export
           onChange={handleChange} />
       })
     )
+
     const optionalGroup2 = optionalGames.slice(optionalPivot)
     const optionalGroup2Children = (
       optionalGroup2.map((proposition: IProposition) => {
