@@ -10,9 +10,11 @@ import FetchActiveEventWrapper from './FetchActiveEventWrapper'
 import Menu1 from './Menu'
 import Dashboard from '../Dashboard/Dashboard'
 import { IEvent } from '../../models/IEvent';
+import { useNavigation } from './useNavigation';
 
 function App() {
   const { userId, setUserId, clearUserId } = useUser();
+  const { navigation } = useNavigation(userId);
   const [event, setEvent] = useState<IEvent>({ id: '', maxUnits: 0, start: new Date(), name: '' });
   let page = ''
 
@@ -28,7 +30,7 @@ function App() {
 
   return (
     <div>
-      <Menu1 signOut={clearUserId} activePage={page} />
+      <Menu1 signOut={clearUserId} activePage={page} navigation={navigation} />
       <BrowserRouter basename={process.env.REACT_APP_ROUTER_BASENAME}>
         <Switch>
           <Route path="/event">

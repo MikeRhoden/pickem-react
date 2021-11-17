@@ -1,30 +1,20 @@
 import { Disclosure } from '@headlessui/react'
 import { LogoutIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
-import { useEffect, useState } from 'react'
 import { IMenuItem } from '../../models/IMenuItem'
-import { fetchMenu } from '../../services/menu'
-
-
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 interface IMenu1Props {
+  navigation: IMenuItem[];
   activePage: string;
   signOut: () => void;
 }
 
 export default function Menu1(props: IMenu1Props) {
-  const [navigation, setNavigation] = useState<IMenuItem[]>([])
+  const navigation = props.navigation;
   const activePage = props.activePage
-  useEffect(() => {
-    async function fetchData() {
-      const menuItems: IMenuItem[] = await fetchMenu()
-      return menuItems
-    }
-    fetchData().then(data => setNavigation(data))
-  }, [props])
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
