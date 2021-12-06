@@ -80,7 +80,7 @@ export default function EventWrapper(props: IEventWrapperProps) {
                   'info': {
                     'start': localStart,
                     'note': x.note,
-                    'pickEarly': new Date(x.start) < eventStart
+                    'pickEarly': localStart < eventStart
                   },
                   'group': {
                     'name': required ? 'required' : 'optional',

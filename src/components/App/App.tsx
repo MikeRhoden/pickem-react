@@ -7,30 +7,22 @@ import Login from '../Login/Login'
 import useUser from './useUser'
 import { useState } from 'react'
 import FetchActiveEventWrapper from './FetchActiveEventWrapper'
-import Menu1 from './Menu'
+import { Menu1 } from './Menu'
 import Dashboard from '../Dashboard/Dashboard'
 import { IEvent } from '../../models/IEvent';
-import { useNavigation } from './useNavigation';
 
 function App() {
   const { userId, setUserId, clearUserId } = useUser();
-  const { navigation } = useNavigation(userId);
   const [event, setEvent] = useState<IEvent>({ id: '', maxUnits: 0, start: new Date(), name: '' });
-  let page = ''
 
   if (!userId) {
     return <Login setToken={setUserId} />
   }
   const isEventActive = (event.id !== '')
 
-  if (window.location.href.indexOf('dashboard') > -1)
-    page = 'dashboard'
-  else if (window.location.href.indexOf('event') > -1)
-    page = 'event'
-
   return (
     <div>
-      <Menu1 signOut={clearUserId} activePage={page} navigation={navigation} />
+      <Menu1 signOut={clearUserId} />
       <BrowserRouter basename={process.env.REACT_APP_ROUTER_BASENAME}>
         <Switch>
           <Route path="/event">

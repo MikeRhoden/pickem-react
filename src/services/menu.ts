@@ -11,21 +11,25 @@ export async function fetchMenu() {
     "authorization": "Bearer " + token
   })
 
-  return fetch('http://localhost:5050/api/menu', {
-    headers: headers
-  })
-    .then(data => data.json())
-    .then(data => {
-      return data.map((item: IMenuItemResponse) => {
-        return {
-          Name: item.Name,
-          Href: item.Href,
-          Current: false
-        }
-      })
-    });
-  // return [
-  //   { Name: 'Your Picks', Href: 'event', Current: false },
-  //   { Name: 'Dashboard', Href: 'dashboard', Current: false },
-  // ]
+  if (process.env['REACT_APP_ENV'] === 'development') {
+    return fetch('http://localhost:5050/api/menu', {
+      headers: headers
+    })
+      .then(data => data.json())
+      .then(data => {
+        return data.map((item: IMenuItemResponse) => {
+          return {
+            Name: item.Name,
+            Href: item.Href,
+            Current: false
+          }
+        })
+      });
+  }
+  else {
+    return [
+      { Name: 'Your Picks', Href: 'event', Current: false },
+      { Name: 'Dashboard', Href: 'dashboard', Current: false },
+    ]
+  }
 }
