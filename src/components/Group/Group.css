@@ -1,12 +1,80 @@
 .group {
     box-sizing: border-box;
     display: grid;
-    grid-template-columns: repeat(2, 350px);
+    grid-template-columns: repeat(2, 450px);
     grid-template-areas: 
         "group-name group-name"
         "group-area1 group-area2";
     margin-top: 20px;
     justify-self: center;
+}
+
+.bowl-group {
+  box-sizing: border-box;
+  display: grid;
+  margin-top: 20px;
+  justify-self: center;
+  align-items: self-start;
+  align-content: start;
+}
+
+.bowl-group1 {
+  grid-template-columns: repeat(1, 450px);
+  grid-template-areas: 
+      "group-name"
+      "bowl-championship-group"
+      "group-separator1"
+      "bowl-playoff-group"
+      "group-separator2"
+      "bowl-tier1-group";
+}
+.group-separator {
+  margin-top: 1em;
+}
+.group-separator1 {
+  grid-area: group-separator1;
+}
+.group-separator2 {
+  grid-area: group-separator2;
+}
+
+.bowl-championship-group {
+  grid-area: bowl-championship-group;
+  justify-self:center;
+}
+
+.bowl-playoff-group {
+  grid-area: bowl-playoff-group;
+  justify-self:center;
+}
+
+.bowl-tier1-group {
+  grid-area: bowl-tier1-group;
+  justify-self:center;
+}
+
+.bowl-group2 {
+  grid-template-columns: repeat(1, 450px);
+  grid-template-areas: 
+      "group-name"
+      "bowl-tier2-group";
+}
+
+.bowl-tier2-group {
+  grid-area: bowl-tier2-group;
+  justify-self:center;
+}
+
+.bowl-group3 {
+  grid-template-columns: repeat(1, 450px);
+  grid-template-areas: 
+      "group-name"
+      "bowl-tier3-group";
+}
+
+.bowl-tier3-group {
+  grid-area: bowl-tier3-group;
+  justify-self:center;
 }
 
 .group-header {

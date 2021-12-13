@@ -13,6 +13,7 @@ type IPropositionProps = {
   group: IGroup;
   pick: IPick;
   onChange: ChangeEventHandler;
+  isBowl: boolean;
 }
 
 export const Proposition: React.FC<IPropositionProps> = (props) => {
@@ -30,7 +31,8 @@ export const Proposition: React.FC<IPropositionProps> = (props) => {
   const start = props.info.start
   const pickEarly = props.info.pickEarly
 
-  const isTooLate = props.isTooLate
+  const isTooLate = props.isTooLate || number === 27
+  const isBowl = props.isBowl
 
   const formatPickEarlyStart = (start: Date) => {
     return 'pick by: ' + start.toLocaleDateString() + ' ' + start.toLocaleTimeString() //+ m + '/' + d + '/' + y + ' ' + h + ':' + (mi < 10 ? '0' + mi : mi)
@@ -48,7 +50,7 @@ export const Proposition: React.FC<IPropositionProps> = (props) => {
   let propositionInfo = note || pickEarly ? (
     <div className="proposition-info">
       <div className="proposition-note" style={isTooLate ? { color: 'white' } : {}}>
-        {note}
+        {note} {number === 27 ? '(selection will be enabled after semis)' : ''}
       </div>
       <div className="proposition-start" style={isTooLate ? { color: 'white' } : {}}>
         {pickEarly ? formatPickEarlyStart(start) : ''}
@@ -57,8 +59,8 @@ export const Proposition: React.FC<IPropositionProps> = (props) => {
   ) : <></>
 
   return (
-    <div className={'proposition' + (isTooLate ? ' tooLate' : '')}>
-      <div className="proposition-pick">
+    <div className={'proposition' + (isTooLate ? ' tooLate' : '') + (isBowl ? ' proposition-bowl' : '')}>
+      <div className={'proposition-pick' + (isBowl ? ' proposition-pick-bowl' : '')}>
         <div className="proposition-visitor">
           <label htmlFor={vis + '-radio'}>
             <input

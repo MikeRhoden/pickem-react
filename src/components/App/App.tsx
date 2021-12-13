@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import './App.css'
 
-import EventWrapper from '../Event/EventWrapper'
 import Login from '../Login/Login'
 import useUser from './useUser'
 import { useState } from 'react'
@@ -10,6 +9,7 @@ import FetchActiveEventWrapper from './FetchActiveEventWrapper'
 import { Menu1 } from './Menu'
 import Dashboard from '../Dashboard/Dashboard'
 import { IEvent } from '../../models/IEvent';
+import BowlEventWrapper from '../Event/BowlEventWrapper';
 
 function App() {
   const { userId, setUserId, clearUserId } = useUser();
@@ -35,7 +35,7 @@ function App() {
                   {event.name}
                 </div>
               </div>
-              {isEventActive && <EventWrapper event={event} userId={userId} />}
+              {isEventActive && <BowlEventWrapper event={event} userId={userId} />}
               {<FetchActiveEventWrapper setEvent={setEvent} />}
             </div>
           </Route>

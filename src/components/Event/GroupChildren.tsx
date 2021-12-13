@@ -17,7 +17,8 @@ export
           group={proposition.group}
           isTooLate={proposition.isTooLate}
           onClear={handleClear}
-          onChange={handleChange} />
+          onChange={handleChange}
+          isBowl={false} />
       })
     )
 
@@ -32,7 +33,8 @@ export
           group={proposition.group}
           isTooLate={proposition.isTooLate}
           onClear={handleClear}
-          onChange={handleChange} />
+          onChange={handleChange}
+          isBowl={false} />
       })
     )
 
@@ -50,7 +52,8 @@ export
           group={proposition.group}
           isTooLate={proposition.isTooLate}
           onClear={handleClear}
-          onChange={handleChange} />
+          onChange={handleChange}
+          isBowl={false} />
       })
     )
 
@@ -65,7 +68,8 @@ export
           group={proposition.group}
           isTooLate={proposition.isTooLate}
           onClear={handleClear}
-          onChange={handleChange} />
+          onChange={handleChange}
+          isBowl={false} />
       })
     )
     return {

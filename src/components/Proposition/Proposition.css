@@ -5,6 +5,10 @@
     grid-template-columns: 290px 50px;
 }
 
+.proposition-bowl {
+  grid-template-columns: 390px 50px;
+}
+
 .proposition-pick {
     border: 1px solid #000000;
     border-right: 0px;
@@ -12,6 +16,10 @@
     grid-template-columns: 230px 50px;
     justify-content: start;
     padding: 5px;
+}
+
+.proposition-pick-bowl {
+  grid-template-columns: 330px 50px;
 }
 
 .proposition-home {

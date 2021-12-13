@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Event from './Event'
+import BowlEvent from './BowlEvent'
 
 import { getMatchupsForEvent } from '../../services/matchup'
 import { getUserPicksForEvent } from '../../services/picks'
@@ -13,7 +13,55 @@ interface IEventWrapperProps {
   userId: string;
 }
 
-export default function EventWrapper(props: IEventWrapperProps) {
+type BowlTierProperties = {
+  group: string;
+  tier: number;
+  minUnitsAllowed: number;
+  maxUnitsAllowed: number;
+  required: boolean;
+}
+
+function GetBowlTierProperties(priority: number): BowlTierProperties {
+  switch (priority) {
+    case 1: return {
+      group: "Tier 3",
+      tier: 5,
+      minUnitsAllowed: 0,
+      maxUnitsAllowed: 30,
+      required: false,
+    }
+    case 2: return {
+      group: "Tier 2",
+      tier: 4,
+      minUnitsAllowed: 10,
+      maxUnitsAllowed: 30,
+      required: true,
+    }
+    case 3: return {
+      group: "Tier 1",
+      tier: 3,
+      minUnitsAllowed: 30,
+      maxUnitsAllowed: 50,
+      required: true,
+    }
+    case 4: return {
+      group: "Playoff",
+      tier: 2,
+      minUnitsAllowed: 50,
+      maxUnitsAllowed: 50,
+      required: true,
+    }
+    case 5: return {
+      group: "Championship",
+      tier: 1,
+      minUnitsAllowed: 100,
+      maxUnitsAllowed: 100,
+      required: true,
+    }
+  }
+}
+
+export default function BowlEventWrapper(props: IEventWrapperProps) {
   const [propositions, setPropositions] = useState<IProposition[]>([])
   const eventId = props.event.id
   const [eventYear, eventWeek] = eventId.split('-')
@@ -40,10 +88,15 @@ export default function EventWrapper(props: IEventWrapperProps) {
                     units = pick.value
                   }
                 }
-                const minUnitsAllowed = x.game < 11 ? 10 : 0
+                const bowlTierProperties: BowlTierProperties = GetBowlTierProperties(x.priority)
+                const minUnitsAllowed = bowlTierProperties.minUnitsAllowed
+                const maxUnitsAllowed = bowlTierProperties.maxUnitsAllowed
+                const group = bowlTierProperties.group
+                const required = bowlTierProperties.required
+
                 const utcStart = new Date(x.start)
-                const localStart = new Date(utcStart.getTime() - (utcStart.getTimezoneOffset() * 60000));
-                const required = x.game < 11
+                const localStart = new Date(utcStart.getTime() - (utcStart.getTimezoneOffset() * 60000))
+
                 let isChanged = false
                 if (selection === '' && required) {
                   selection = x.vis
@@ -70,9 +123,9 @@ export default function EventWrapper(props: IEventWrapperProps) {
                     'pickEarly': localStart < eventStart
                   },
                   'group': {
-                    'name': required ? 'required' : 'optional',
+                    'name': group,
                     'minUnitsAllowed': minUnitsAllowed,
-                    'maxUnitsAllowed': 30
+                    'maxUnitsAllowed': maxUnitsAllowed
                   },
                   'pick': {
                     'selection': selection,
@@ -104,7 +157,7 @@ export default function EventWrapper(props: IEventWrapperProps) {
   }
 
   return (
-    <Event
+    <BowlEvent
       userId={userId}
       event={props.event}
       propositions={propositions} />

@@ -3,4 +3,5 @@ export interface IEvent {
   id: string;
   maxUnits: number;
   name: string;
+  //  bowl: boolean;
 }

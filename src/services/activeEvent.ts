@@ -9,13 +9,14 @@ function handleErrors(response: Response) {
 
 export async function fetchEvent() {
   const user: IUser = JSON.parse(sessionStorage.getItem('user'))
-  const headers = new Headers({
-    'Authorization': 'Bearer ' + user.Token
-  });
-  return fetch(process.env['REACT_APP_FETCH_ACTIVE_EVENT'],
-    {
-      headers: headers
-    })
+  // const headers = new Headers({
+  //   'Authorization': 'Bearer ' + user.Token
+  // });
+  // return fetch(process.env['REACT_APP_FETCH_ACTIVE_EVENT'],
+  //   {
+  //     headers: headers
+  //   })
+  return fetch(process.env['REACT_APP_FETCH_ACTIVE_EVENT'])
     .then(handleErrors)
     .then(data => data.json())
     .catch(e => {
