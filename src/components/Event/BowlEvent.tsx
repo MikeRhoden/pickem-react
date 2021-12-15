@@ -172,11 +172,11 @@ export default function BowlEvent(props: EventProps) {
       return
     }
 
-    if (proposition.group.name === 'required') {
+    if (proposition.group.name !== 'Tier 3') {
       dispatch({ type: 'selection', index: index, value: proposition.matchup.vis })
       dispatch({ type: 'units', index: index, value: proposition.group.minUnitsAllowed })
     }
-    if (proposition.group.name === 'optional') {
+    else {
       dispatch({ type: 'selection', index: index, value: '' })
       dispatch({ type: 'units', index: index, value: proposition.group.minUnitsAllowed })
     }
