@@ -30,7 +30,7 @@ export async function savePick(pick: IUserPickForSave) {
   qs += '&week=' + pick.week
   qs += '&year=' + pick.year
   qs += '&game=' + pick.game
-  qs += '&pick=' + pick.pick
+  qs += '&pick=' + encodeURIComponent(pick.pick)
   qs += '&value=' + pick.value
   return fetch('http://big12pickem.com/rpc/pick/put/pick.asp?' + qs)
     .then(handleErrors)

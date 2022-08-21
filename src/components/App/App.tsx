@@ -9,7 +9,8 @@ import FetchActiveEventWrapper from './FetchActiveEventWrapper'
 import { Menu1 } from './Menu'
 import Dashboard from '../Dashboard/Dashboard'
 import { IEvent } from '../../models/IEvent';
-import BowlEventWrapper from '../Event/BowlEventWrapper';
+//import BowlEventWrapper from '../Event/BowlEventWrapper';
+import EventWrapper from '../Event/EventWrapper';
 
 function App() {
   const { userId, setUserId, clearUserId } = useUser();
@@ -35,7 +36,7 @@ function App() {
                   {event.name}
                 </div>
               </div>
-              {isEventActive && <BowlEventWrapper event={event} userId={userId} />}
+              {isEventActive && <EventWrapper event={event} userId={userId} />}
               {<FetchActiveEventWrapper setEvent={setEvent} />}
             </div>
           </Route>

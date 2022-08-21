@@ -13,20 +13,25 @@ interface IMenu1Props {
   signOut: () => void;
 }
 
+const navigation: IMenuItem[] = [
+  { Name: 'Your Picks', Href: 'event', Current: false },
+  { Name: 'Dashboard', Href: 'dashboard', Current: false },
+]
+
 const Menu1: React.FC<IMenu1Props> = React.memo((props) => {
   let activePage = '';
   if (window.location.href.indexOf('dashboard') > -1)
     activePage = 'dashboard'
   else if (window.location.href.indexOf('event') > -1)
     activePage = 'event'
-  const [navigation, setNavigation] = useState<IMenuItem[]>([])
-  useEffect(() => {
-    async function fetchData() {
-      const menuItems: IMenuItem[] = await fetchMenu()
-      return menuItems
-    }
-    fetchData().then(data => setNavigation(data))
-  }, [])
+  // const [navigation, setNavigation] = useState<IMenuItem[]>([])
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const menuItems: IMenuItem[] = await fetchMenu()
+  //     return menuItems
+  //   }
+  //   fetchData().then(data => setNavigation(data))
+  // }, [])
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
