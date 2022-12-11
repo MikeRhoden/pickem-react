@@ -84,7 +84,7 @@ button .modal-button {
 @media (max-width: 1400px) {
     .event {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr 1fr;
+        grid-template-rows: auto auto auto;
         grid-template-areas:
             "deadline"
             "group1"

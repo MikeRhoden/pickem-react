@@ -89,6 +89,7 @@
     display: inline;
     font: inherit;
     height: auto;
+    line-height: 8px;
     padding: 0;
     perspective-origin: 0 0;
     text-align: start;

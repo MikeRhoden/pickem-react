@@ -1,7 +1,7 @@
 .group {
     box-sizing: border-box;
     display: grid;
-    grid-template-columns: repeat(2, 450px);
+    grid-template-columns: repeat(2, 350px);
     grid-template-areas: 
         "group-name group-name"
         "group-area1 group-area2";
