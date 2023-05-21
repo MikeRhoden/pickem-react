@@ -1,4 +1,4 @@
-export default function MockPropositions(mockLoadEventTimeStamp, isTooLate? = false) {
+export default function MockPropositions(mockLoadEventTimeStamp, isTooLate = false) {
     const p = [
         {
             'visitor': 'Auburn',

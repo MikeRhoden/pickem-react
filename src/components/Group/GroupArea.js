@@ -14,6 +14,7 @@ export default function GroupArea(props) {
                     info={proposition.info}
                     group={proposition.group}
                     isTooLate={proposition.isTooLate}
+                    onClear={props.onClear}
                     onChange={props.onChange} />
             })}
         </div>
